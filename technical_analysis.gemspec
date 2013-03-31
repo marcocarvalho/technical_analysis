@@ -20,5 +20,6 @@ Gem::Specification.new do |spec|
 
   #spec.add_dependency 'ffi-talib', "~> 0.1"  # in the future
   spec.add_development_dependency "bundler", "~> 1.3"
+  spec.add_development_dependency "rspec"
   spec.add_development_dependency "rake"
 end

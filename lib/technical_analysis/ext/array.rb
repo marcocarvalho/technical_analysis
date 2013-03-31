@@ -1,7 +1,5 @@
 module TechnicalAnalysis
-  module Array
-    extend FFI::Talib
-    
+  module Array    
     def execute_talib(name, *params)
       name = "ta_#{name.to_s.downcase}".to_sym
       if FFI::Talib.implemented_talib_methods.include?(name.to_sym)
@@ -12,6 +10,7 @@ module TechnicalAnalysis
     end
 
     def respond_to?(method)
+      puts "here!!"
       FFI::Talib.implemented_talib_methods.include?(method.to_sym) || super
     end
 
@@ -23,4 +22,8 @@ module TechnicalAnalysis
       end
     end
   end
+end
+
+class Array.new(10) { iii }
+  include TechnicalAnalysis::Array
 end
