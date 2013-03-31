@@ -1,6 +1,6 @@
 module TechnicalAnalysis::Data
   class Candle
-    attr_accessor :open, :high, :low, :close, :volume
+    attr_reader :open, :high, :low, :close, :datetime, :volume
 
     def initialize(*vals)
       if vals.first.is_a?(Hash)
@@ -10,12 +10,39 @@ module TechnicalAnalysis::Data
       end
     end
 
+    def datetime=(val)
+      if val.is_a?(String)
+        @datetime = Time.parse(val)
+      else
+        @datetime = val
+      end
+    end
+
+    def method_missing(method, *params)
+      if [:open=, :high=, :low=, :close=].include?(method)
+        instance_variable_set("@#{method.to_s.chop}", Float(params.first)) unless params.first.nil?
+      elsif [:time=, :date=, :datetime=].include?(method)
+        instance_variable_set("@datetime", Time.parse(params.first))  unless params.first.nil?
+      elsif method == :volume=
+        instance_variable_set("@volume", Integer(params.first)) unless params.first.nil?
+      else
+        super
+      end
+    end
+
+    def respond_to?(method)
+      [:open=, :high=, :low=, :close=, :time=, :date=, :datetime=].include?(method) || super
+    end
+
+    alias :time :datetime
+    alias :date :datetime
+
     def update_attributes(vals)
-      raise ArgumentError.new('Hash or Array(open, high, low, close, volume) expected') unless [Hash, Array].include?(vals.class)
+      raise ArgumentError.new('Hash or Array(datetime, open, high, low, close, volume) expected') unless [Hash, Array].include?(vals.class)
       if vals.is_a?(Array)
-        @open, @high, @low, @close, @volume = vals
+        self.datetime, self.open, self.high, self.low, self.close, self.volume = vals
       elsif vals.is_a?(Hash)
-        [:open, :high, :low, :close, :volume].each { |i| send("#{i}=", vals[i]) }
+        [:open, :high, :low, :close, :volume, :date, :time, :datetime].each { |i| send("#{i}=", vals[i]) if send(i).nil? }
       end
     end
   end
