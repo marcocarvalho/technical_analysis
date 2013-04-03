@@ -1,20 +1,8 @@
 # TechnicalAnalysis
 
-TODO: Write a gem description
+Technical Analysis GEM, under construction
 
 ## Installation
-
-Add this line to your application's Gemfile:
-
-    gem 'technical_analysis'
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install technical_analysis
 
 ## Usage
 
