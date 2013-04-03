@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = TechnicalAnalysis::VERSION
   spec.authors       = ["Marco Carvalho"]
   spec.email         = ["marco.carvalho.swasthya@gmail.com"]
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
+  spec.description   = %q{Technical Analysis Gem}
+  spec.summary       = %q{Under construction}
   spec.homepage      = ""
   spec.license       = "MIT"
 
@@ -21,5 +21,6 @@ Gem::Specification.new do |spec|
   #spec.add_dependency 'ffi-talib', "~> 0.1"  # in the future
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "rspec"
+  spec.add_development_dependency "pry-nav"
   spec.add_development_dependency "rake"
 end

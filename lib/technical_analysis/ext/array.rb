@@ -24,6 +24,6 @@ module TechnicalAnalysis
   end
 end
 
-class Array.new(10) { iii }
+class Array
   include TechnicalAnalysis::Array
 end
