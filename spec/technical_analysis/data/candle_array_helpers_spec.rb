@@ -3,7 +3,6 @@ require 'spec_helper'
 describe TechnicalAnalysis::Data::CandleArray do
   subject do 
     t = TechnicalAnalysis::Data::CandleArray.new
-    require 'pry'; bundle.pry
     t.load_from_csv('spec/samples/small_petr4.csv')
     t
   end
@@ -24,7 +23,7 @@ describe TechnicalAnalysis::Data::CandleArray do
       subject.low.should == sample_data.map { |i| i[:low] }
     end
 
-    it '#low' do
+    it '#open' do
       subject.open.should == sample_data.map { |i| i[:open] }
     end
 
@@ -32,11 +31,11 @@ describe TechnicalAnalysis::Data::CandleArray do
       subject.close.should == sample_data.map { |i| i[:close] }
     end
 
-    it '#low' do
+    it '#volume' do
       subject.volume.should == sample_data.map { |i| i[:volume] }
     end
 
-    it '#low' do
+    it '#date' do
       subject.date.should == sample_data.map { |i| i[:date] }
     end
   end

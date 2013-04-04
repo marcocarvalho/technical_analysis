@@ -15,11 +15,11 @@ module TechnicalAnalysis::Data::Helpers
   end
 
   def open
-    self.map { |i| i.close }
+    self.map { |i| i.open }
   end
 
   def volume
-    self.map { |i| i.close }
+    self.map { |i| i.volume }
   end
 
   def datetime
