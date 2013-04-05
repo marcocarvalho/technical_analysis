@@ -5,4 +5,4 @@ module TechnicalAnalysis::Analysis
   end
 end
 
-Dir[ File.join(File.dirname(__FILE__), 'Pattern/*.rb' )].each { |file| require file }
+Dir[ File.join(File.dirname(__FILE__), 'pattern/*.rb' )].each { |file| require file }

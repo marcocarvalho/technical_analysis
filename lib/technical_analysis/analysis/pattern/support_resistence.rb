@@ -10,17 +10,22 @@ module TechnicalAnalysis::Analysis
         ((idx - see_last)..idx).each do |i|
           is_trend &= array[idx].send(signal, array[i])
         end
+        if !array[idx + 1].nil?
+          is_trend &= !(array[(idx + 1)].send(signal, array[idx]))
+        else
+          is_trend = false
+        end
         sup << array[idx] if is_trend
       end
       sup
     end
 
-    def supports(array, see_last = 2)
-      support_resistence(array, :<, see_last)
+    def supports(see_last = 2)
+      support_resistence(self.close, :<, see_last)
     end
 
     def resistences(array, see_last = 2)
-      support_resistence(array, :<, see_last)
+      support_resistence(self.close, :<, see_last)
     end
   end
 end
