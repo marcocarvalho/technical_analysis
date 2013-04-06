@@ -8,10 +8,12 @@ describe TechnicalAnalysis::Data::CandleArray do
   end
 
   let(:sample_data) {
-    [{ date: Time.parse('2013-03-26'), open: 18.73, high: 18.88, low: 18.48, close: 18.59, volume: 15781800 },
-     { date: Time.parse('2013-03-25'), open: 18.73, high: 18.82, low: 18.42, close: 18.63, volume: 24340200 },
+    [
+     { date: Time.parse('2013-03-21'), open: 18.72, high: 18.86, low: 18.49, close: 18.53, volume: 21978600 },
      { date: Time.parse('2013-03-22'), open: 18.55, high: 18.71, low: 18.46, close: 18.63, volume: 16137700 },
-     { date: Time.parse('2013-03-21'), open: 18.72, high: 18.86, low: 18.49, close: 18.53, volume: 21978600 }]
+     { date: Time.parse('2013-03-25'), open: 18.73, high: 18.82, low: 18.42, close: 18.63, volume: 24340200 },
+     { date: Time.parse('2013-03-26'), open: 18.73, high: 18.88, low: 18.48, close: 18.59, volume: 15781800 }
+   ]
   }
 
   context '#Helpers' do

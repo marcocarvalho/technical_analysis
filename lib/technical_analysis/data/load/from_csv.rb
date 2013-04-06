@@ -32,5 +32,6 @@ module TechnicalAnalysis::Data::LoadInterfaces
 
       self << Hash[*format.zip(line.split(',')).flatten]
     end
+    self.sort! { |a,b| a.date <=> b.date }
   end
 end
