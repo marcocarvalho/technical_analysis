@@ -18,14 +18,25 @@ describe 'Support & resistence' do
     end
   end
 
-  context 'resistence' do
+  context 'suports' do
     { [12.0, 11.0, 10.0, 11.0] => [10.0],
     [12.0, 11.0, 10.0]       => [],
     [10, 11, 12, 11]         => [],
     [1, 2, 3, 4, 4, 5, 4, 4, 3, 2, 1, 0.1, 1 ,2 , 1, 2, 3, 4, 3, 4, 5, 6, 7, 8, 7, 6, 8, 10] => [0.1, 6] }.each do |p, exp|
-      it 'resistence' do
+      it 'suports' do
         subject.support_resistence(p, :>).should == exp
       end
+    end
+  end
+
+  context 'with real prices' do
+    subject { t = TechnicalAnalysis::Data::CandleArray.new; t.load_from_csv('spec/samples/1_month_petr4.csv') }
+    it 'resistence' do
+      subject.resistences.should == [18.95, 19.38]
+    end
+
+    it 'suports' do
+      subject.supports.should == [16.5, 18.53]
     end
   end
 end

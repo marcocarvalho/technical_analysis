@@ -3,8 +3,9 @@ module TechnicalAnalysis::Data
     attr_accessor :period
 
     include TechnicalAnalysis::Data::LoadInterfaces
-    include TechnicalAnalysis::Analysis::Trend
     include TechnicalAnalysis::Data::Helpers
+    include TechnicalAnalysis::Analysis::Trend
+    include TechnicalAnalysis::Analysis::Pattern
 
     def <<(val)
       if val.is_a?(Hash)
