@@ -4,14 +4,16 @@ module TechnicalAnalysis::Analysis
       raise ArgumentError.new('Array expected') unless array.is_a?(Array)
       raise ArgumentError.new('signal expected <, >, =>, etc') unless signal.is_a?(Symbol)
       sup = []
+      #require 'pry'; binding.pry
+      esig = (signal.to_s + '=').to_sym unless signal.to_s.index('=')
       array.each_index do |idx|
-        next if idx < (see_last - 1)
+        next if idx < see_last
         is_trend = true
-        ((idx - see_last)..idx).each do |i|
-          is_trend &= array[idx].send(signal, array[i])
+        ((idx - see_last)..(idx - 1)).each do |i|
+          is_trend &= array[i].send(signal, array[idx])
         end
         if !array[idx + 1].nil?
-          is_trend &= !(array[(idx + 1)].send(signal, array[idx]))
+          is_trend &= !array[idx].send(esig, array[(idx + 1)])
         else
           is_trend = false
         end
