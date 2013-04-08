@@ -1,9 +1,9 @@
 module TechnicalAnalysis
-  module Array    
+  module Array
     def execute_talib(name, *params)
-      name = "ta_#{name.to_s.downcase}".to_sym
+      name_send = "ta_#{name.to_s.downcase}".to_sym
       if FFI::Talib.implemented_talib_methods.include?(name.to_sym)
-        FFI::Talib.send(name, *params)
+        FFI::Talib.send(name_send, *params)
       else
         raise NotImplementedError.new("#{name} not implemented in FFI::Talib yet")
       end
