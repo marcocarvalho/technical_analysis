@@ -1,3 +1,4 @@
+require 'ffi/talib'
 require "technical_analysis/version"
 require 'time'
 
