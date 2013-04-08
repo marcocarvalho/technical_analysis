@@ -6,6 +6,7 @@ module TechnicalAnalysis::Data
     include TechnicalAnalysis::Data::Helpers
     include TechnicalAnalysis::Analysis::Trend
     include TechnicalAnalysis::Analysis::Pattern
+    include TechnicalAnalysis::Analysis::Indicator
 
     def <<(val)
       if val.is_a?(Hash)

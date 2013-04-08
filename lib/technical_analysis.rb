@@ -6,3 +6,7 @@ module TechnicalAnalysis
   autoload :Data, 'technical_analysis/data'
   autoload :Analysis, 'technical_analysis/analysis'
 end
+
+class Array
+  include TechnicalAnalysis::Array
+end

@@ -10,7 +10,6 @@ module TechnicalAnalysis
     end
 
     def respond_to?(method)
-      puts "here!!"
       FFI::Talib.implemented_talib_methods.include?(method.to_sym) || super
     end
 
@@ -22,8 +21,4 @@ module TechnicalAnalysis
       end
     end
   end
-end
-
-class Array
-  include TechnicalAnalysis::Array
 end
