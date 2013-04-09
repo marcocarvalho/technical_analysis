@@ -2,6 +2,8 @@ module TechnicalAnalysis::Data
   class Candle
     attr_reader :open, :high, :low, :close, :datetime, :volume
 
+    include TechnicalAnalysis::RiskManagement
+
     def initialize(*vals)
       if vals.first.is_a?(Hash)
         update_attributes(vals.first)
@@ -16,6 +18,10 @@ module TechnicalAnalysis::Data
       else
         @datetime = val
       end
+    end
+
+    def stop_loss
+      super(high, low)
     end
 
     def method_missing(method, *params)

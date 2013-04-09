@@ -24,6 +24,13 @@ describe TechnicalAnalysis::Data::Candle do
     end
   end
 
+  context 'methods included' do
+    let(:params) { ['2012-10-10', 20, 30, 20, 30,1000] }
+    it 'stop_loss' do
+      subject.stop_loss.should == ( 30 - ( ( 30 - 20 ) * 1.33 ) )
+    end
+  end
+
   context 'Array missing some last parameters' do
     let(:params) { ['2012-10-10',10,20,'30'] }
     it 'should initialize candle' do
