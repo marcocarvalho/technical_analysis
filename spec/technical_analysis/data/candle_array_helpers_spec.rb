@@ -40,5 +40,11 @@ describe TechnicalAnalysis::Data::CandleArray do
     it '#date' do
       subject.date.should == sample_data.map { |i| i[:date] }
     end
+
+    it '#stop_loss with last' do
+      high = subject.last.high
+      low  = subject.last.low
+      subject.stop_loss.should == ( high - ( ( high - low ) * 1.33 ) ) 
+    end
   end
 end
