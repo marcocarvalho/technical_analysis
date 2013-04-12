@@ -1,6 +1,7 @@
 require 'ffi/talib'
 require "technical_analysis/version"
 require 'time'
+require 'yahoo_stock'
 
 module TechnicalAnalysis
   autoload :Array, 'technical_analysis/ext/array'

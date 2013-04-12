@@ -1,6 +1,6 @@
 module TechnicalAnalysis::Data
   class CandleArray < Array
-    attr_accessor :period
+    attr_accessor :period, :symbol
 
     include TechnicalAnalysis::Data::LoadInterfaces
     include TechnicalAnalysis::Data::Helpers
