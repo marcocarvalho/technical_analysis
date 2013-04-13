@@ -1,0 +1,11 @@
+development:
+  adapter: sqlite3
+  database: db/quotes_dev.sqlite.db
+
+test:
+  adapter: sqlite3
+  database: db/quotes_test.sqlite.db
+
+production:
+  adapter: sqlite3
+  database: db/quotes_live.sqlite.db
