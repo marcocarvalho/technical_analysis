@@ -4,6 +4,8 @@ module TechnicalAnalysis::Data
 
     include TechnicalAnalysis::RiskManagement
 
+    autoload :Quote, 'technical_analysis/data/candle/quote'
+
     def initialize(*vals)
       if vals.first.is_a?(Hash)
         update_attributes(vals.first)
