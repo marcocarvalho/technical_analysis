@@ -23,7 +23,7 @@ module TechnicalAnalysis::Data::Helpers
   end
 
   def datetime
-    self.map { |i| i.datetime.to_f }
+    self.map { |i| i.datetime }
   end
 
   alias :time :datetime
