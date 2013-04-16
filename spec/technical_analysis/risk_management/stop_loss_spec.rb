@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe '' do
   Kernel.send(:remove_const, :B) if Kernel.const_defined?(:B)
-  class B; include TechnicalAnalysis::RiskManagement; end
+  class B; include TechnicalAnalysis::RiskManagement::Helpers; end
   subject do 
     B.new
   end

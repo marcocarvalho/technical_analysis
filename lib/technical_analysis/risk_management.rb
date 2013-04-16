@@ -1,5 +1,6 @@
 module TechnicalAnalysis
   module RiskManagement
+    autoload :Helpers, 'technical_analysis/risk_management/helpers'
   end
 end
 
