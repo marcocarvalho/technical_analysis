@@ -1,6 +1,12 @@
 module TechnicalAnalysis
   module RiskManagement
     autoload :Helpers, 'technical_analysis/risk_management/helpers'
+    class Abstract
+      def self.extended(klass)
+        @classes ||= []
+        @classes << klass
+      end
+    end
   end
 end
 
