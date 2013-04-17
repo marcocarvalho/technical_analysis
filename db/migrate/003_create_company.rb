@@ -1,12 +1,12 @@
 class CreateCompany < ActiveRecord::Migration
   def change
-    create_table :company do |t|
+    create_table :companies do |t|
       t.string :symbol, :null => false
       t.string :name, :null => false
 
       t.timestamps
     end
 
-    add_index :company, [:symbol]
+    add_index :companies, [:symbol]
   end
 end

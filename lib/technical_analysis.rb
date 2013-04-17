@@ -11,8 +11,13 @@ module TechnicalAnalysis
   autoload :Data, 'technical_analysis/data'
   autoload :Analysis, 'technical_analysis/analysis'
   autoload :RiskManagement, 'technical_analysis/risk_management'
-  autoload :Portfolio, 'technical_analysis/portfolio'
 end
+
+autoload :Portfolio, 'technical_analysis/models/portfolio'
+autoload :Company,   'technical_analysis/models/company'
+
+#autoload :Trade, 'technical_analysis/models/trade'
+
 
 class Array
   include TechnicalAnalysis::Array
