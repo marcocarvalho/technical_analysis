@@ -15,6 +15,7 @@ end
 
 autoload :Portfolio, 'technical_analysis/models/portfolio'
 autoload :Company,   'technical_analysis/models/company'
+autoload :ImportBovespa, 'technical_analysis/data/import_bovespa'
 
 #autoload :Trade, 'technical_analysis/models/trade'
 
