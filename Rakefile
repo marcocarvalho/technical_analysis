@@ -3,6 +3,7 @@ Bundler.setup
 # require "bundler/gem_tasks"
 require 'active_record'
 require 'sqlite3'
+require 'mysql2'
 require 'yaml'
 require 'logger'
 
@@ -12,6 +13,6 @@ task :migrate => :environment do
 end
 
 task :environment do
-  ActiveRecord::Base.establish_connection(YAML::load(File.open('config/database.yaml'))['development'])
+  ActiveRecord::Base.establish_connection(YAML::load(File.open('config/database.yaml'))[ ENV['RACK_ENV'] || 'development'])
   ActiveRecord::Base.logger = Logger.new(STDOUT)
 end

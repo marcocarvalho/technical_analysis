@@ -4,7 +4,7 @@ require 'time'
 require 'yahoo_stock'
 require 'active_record'
 
-ActiveRecord::Base.establish_connection(YAML::load(File.open('config/database.yaml'))['development'])
+ActiveRecord::Base.establish_connection(YAML::load(File.open('config/database.yaml'))[ENV['RACK_ENV'] ||'development'])
 
 module TechnicalAnalysis
   autoload :Array, 'technical_analysis/ext/array'
@@ -16,6 +16,8 @@ end
 autoload :Portfolio, 'technical_analysis/models/portfolio'
 autoload :Company,   'technical_analysis/models/company'
 autoload :ImportBovespa, 'technical_analysis/data/import_bovespa'
+autoload :HistoricalQuote, 'technical_analysis/models/historical_quote.rb'
+autoload :ImportBovespaCompanyInfo, 'technical_analysis/data/import_bovespa_company_info'
 
 #autoload :Trade, 'technical_analysis/models/trade'
 

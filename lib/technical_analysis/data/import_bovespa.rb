@@ -1,7 +1,16 @@
 require 'time'
 
 class ImportBovespa
+  attr_reader :filename
+
   def initialize(file)
+    @filename = file
+    raise 'file name must be string' unless @filename.is_a?(String)
+    raise 'file dont exists'         unless File.exists? @filename
+  end
+
+  def block?
+    @block_given
   end
 
   Layout = {
@@ -9,7 +18,7 @@ class ImportBovespa
     data:   [8,  2..9,     :date],
     codbdi: [2,  10..11,   :string],
     codneg: [12, 12..23,   :string],
-    tpmerc: [3,  24..26,   :fixnum],
+    tpmerc: [3,  24..26,   :market_type],
     nomres: [12, 27..38,   :string],
     especi: [10, 39..48,   :string],
     prazot: [3,  49..51,   :string],
@@ -27,11 +36,55 @@ class ImportBovespa
     preexe: [13, 188..200, :float],
     indopc: [1,  201..201, :string],
     datven: [8,  202..209, :date],
-    fatcot: [7,  210..216, :integer],
+    fatcot: [7,  210..216, :fixnum],
     ptoexe: [13, 217..229, :decimal],
     codisi: [12, 230..241, :string],
     dismes: [3,  242..244, :fixnum] 
   }
+
+  def import
+    arr = []
+    file = File.open(filename, 'r')
+    file.readlines.each do |line|
+      result = split_line line
+      next if result.nil?
+      if block_given?
+         yield result
+      else
+        arr << result
+      end
+    end
+    return arr unless block_given?
+  end
+
+  def market_type(str)
+    case str.to_i
+    when 10 
+      :vista
+    when 12 
+      :call_exercise
+    when 13 
+      :put_exercise
+    when 17
+      :auction
+    when 20
+      :fractional
+    when 30
+      :term
+    when 50 
+      :future_1 # Futuro com movimentação retida
+    when 60 
+      :future_2 # FUTURO COM MOVIMENTAÇÃO CONTÍNUA
+    when 70 
+      :call
+    when 80 
+      :put
+    end
+  end
+
+  def decimal(str)
+    str.to_i / 1000000.0
+  end
 
   def float(str)
     str.to_i / 100.0
@@ -39,7 +92,8 @@ class ImportBovespa
 
   def date(str)
     str =~ /(....)(..)(..)/
-    Time.parse("$1/$2/$3")
+    # Time.parse("$1/$2/$3")
+    [$1, $2, $3].join('-')
   end
 
   def fixnum(str)
@@ -47,7 +101,7 @@ class ImportBovespa
   end
 
   def string(str)
-    str
+    str.strip
   end
 
   def split_line(line)
@@ -56,5 +110,6 @@ class ImportBovespa
     Layout.each do |k, v|
       ret[k] = send(v.last, line[v[1]])
     end
+    ret
   end
 end

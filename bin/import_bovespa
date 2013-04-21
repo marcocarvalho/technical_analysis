@@ -1,0 +1,33 @@
+require 'technical_analysis'
+require 'activerecord-import'
+require "activerecord-import/base"
+require 'csv'
+require 'tempfile'
+ActiveRecord::Import.require_adapter('sqlite3')
+require 'logger'
+
+log = Logger.new(STDOUT)
+
+i = ImportBovespa.new(ARGV[0])
+
+csv = CSV.new(File.new('import.csv', 'w+'))
+csv << [:date, :symbol, :period, :open, :high, :low, :close, :volume, :operations, :create_at, :updated_at]
+
+stats = Hash.new(0)
+
+log.info('Start loading')
+
+arr = []
+i.import do |r|
+  csv << [ r[:data], r[:codneg], :day, r[:preabe], r[:premax], r[:premin], r[:preult], r[:voltot], r[:totneg], r[:data], r[:data] ]
+  stats[:count]     += 1
+  stats[r[:tpmerc]] += 1
+  print "#{stats[:count]}\r"
+end
+
+log.info("Finished importing: #{stats[:count]}")
+
+stats.each do |k, v|
+  next if k == :count
+  log.info("#{k}: #{v}")  
+end
