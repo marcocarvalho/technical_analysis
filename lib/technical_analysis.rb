@@ -17,6 +17,7 @@ autoload :Portfolio, 'technical_analysis/models/portfolio'
 autoload :Company,   'technical_analysis/models/company'
 autoload :ImportBovespa, 'technical_analysis/data/import_bovespa'
 autoload :Movement,   'technical_analysis/models/movement'
+autoload :Dividend,   'technical_analysis/models/dividend'
 autoload :HistoricalQuote, 'technical_analysis/models/historical_quote.rb'
 autoload :ImportBovespaCompanyInfo, 'technical_analysis/data/import_bovespa_company_info'
 

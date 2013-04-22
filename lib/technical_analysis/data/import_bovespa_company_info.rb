@@ -29,7 +29,7 @@ class ImportBovespaCompanyInfo
       return false
     end
 
-    companies.each do |symbol| 
+    companies.each do |symbol|
       log("Getting CVM_ID for #{symbol}")
       cvm_id = get_cvm_id(symbol)
       next unless cvm_id
@@ -37,8 +37,11 @@ class ImportBovespaCompanyInfo
       log("Found #{cvm_id} for #{symbol}")
       movements = company_movements(raw)
       log("Found #{movements.count} movements for #{symbol}")
+      dividends = company_dividends(raw)
+      log("Found #{dividends.count} dividends for #{symbol}")
       cia = Company.where(symbol: symbol).first_or_create
       movements.each { |v| cia.movements.new(v) }
+      dividends.each { |v| cia.dividends.new(v) }
       cia.save
     end
   end
@@ -61,9 +64,33 @@ class ImportBovespaCompanyInfo
       quantity       = parse_quantity(tds[3].search('.label').first.content, type)
       credit_at      = parse_date(tds[4].content)
       obs            = tds[5].search('.label').first.content
-      movs << { type: type, deliberated_at: deliberated_at, ex_at: ex_at, factor: quantity, credit_at: credit_at, obs: obs }
-    end 
+      movs << { earning_type: type, deliberated_at: deliberated_at, ex_at: ex_at, factor: quantity, credit_at: credit_at, obs: obs }
+    end
     movs
+  end
+
+  def company_dividends(raw)
+    first, second = raw.search('table.MasterTable_SiteBmfBovespa')
+    movs = []
+    trs = second.search('tr')
+    (1..(trs.size - 1)).each do |idx|
+      tds            = trs[idx].search('td')
+      type           = tds[0].content.downcase.to_sym
+      deliberated_at = parse_date(tds[1].content)
+      ex_at          = parse_date(tds[2].content)
+      ordinarias     = parse_float(tds[3].content)
+      preferencias   = parse_float(tds[4].content)
+      related_at     = tds[5].content
+      credit_at      = parse_date(tds[6].content)
+      obs            = tds[7].search('.label').first.content
+      movs << { earning_type: type, deliberated_at: deliberated_at, ex_at: ex_at, ordinary_payment: ordinarias, prefered_payment: preferencias, related_at: related_at, credit_at: credit_at, obs: obs }
+    end
+    movs
+  end
+
+  def parse_float(str)
+    return 0.0 if str.empty?
+    str.sub(',', '.').to_f
   end
 
   def parse_date(date)
@@ -101,7 +128,7 @@ class ImportBovespaCompanyInfo
       log("MasterTable_SiteBmfBovespa table not found")
       return nil
     end
-    
+
     link = p.search('a').first
     unless p
       log("link with cvm id inside MasterTable_SiteBmfBovespa table not found")
@@ -109,7 +136,7 @@ class ImportBovespaCompanyInfo
     end
 
     link = link.get_attribute('href')
-    
+
     link.split('=').last
   end
 end

@@ -29,5 +29,5 @@ log.info("Finished importing: #{stats[:count]}")
 
 stats.each do |k, v|
   next if k == :count
-  log.info("#{k}: #{v}")  
+  log.info("#{k}: #{v}")
 end

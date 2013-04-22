@@ -1,11 +1,11 @@
 class CreateMovements < ActiveRecord::Migration
   def change
     create_table :movements do |t|
-      t.string :type, :null => false
-      t.date :deliberated_at, :null => false
-      t.date :ex_at,          :null => true
-      t.date :credit_at,      :null => true
-      t.float :factor,        :null => false
+      t.string :earning_type, :null => false
+      t.date   :deliberated_at, :null => false
+      t.date   :ex_at,          :null => true
+      t.date   :credit_at,      :null => true
+      t.float  :factor,        :null => false
       t.string :obs,          :null => true
 
       t.timestamps
