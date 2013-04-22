@@ -33,29 +33,37 @@ class ImportBovespaCompanyInfo
       log("Getting CVM_ID for #{symbol}")
       cvm_id = get_cvm_id(symbol)
       next unless cvm_id
-      raw = raw_company_info(cvm_id)
-
+      raw       = raw_company_info(cvm_id)
       log("Found #{cvm_id} for #{symbol}")
+      movements = company_movements(raw)
+      log("Found #{movements.count} movements for #{symbol}")
+      cia = Company.where(symbol: symbol).first_or_create
+      movements.each { |v| cia.movements.new(v) }
+      cia.save
     end
   end
 
-  def raw_company_info
+  def raw_company_info(cvm_id)
     Nokogiri::HTML(open("http://www.bmfbovespa.com.br/cias-listadas/empresas-listadas/ResumoEventosCorporativos.aspx?codigoCvm=#{cvm_id}&tab=3&idioma=pt-br"))
   end
 
   def company_movements(raw)
     first, second = raw.search('table.MasterTable_SiteBmfBovespa')
 
+    movs = []
+
     trs = first.search('tr')
     (1..(trs.size - 1)).each do |idx|
       tds = trs[idx].search('td')
-      type           = tds[0].content.to_sym
+      type           = tds[0].content.downcase.to_sym
       deliberated_at = parse_date(tds[1].content)
       ex_at          = parse_date(tds[2].content)
       quantity       = parse_quantity(tds[3].search('.label').first.content, type)
       credit_at      = parse_date(tds[4].content)
       obs            = tds[5].search('.label').first.content
+      movs << { type: type, deliberated_at: deliberated_at, ex_at: ex_at, factor: quantity, credit_at: credit_at, obs: obs }
     end 
+    movs
   end
 
   def parse_date(date)
@@ -69,7 +77,12 @@ class ImportBovespaCompanyInfo
   def parse_quantity(str, type)
     case type
     when :desdobramento
-      ''
+      (1 + (str.to_i / 100))
+    when :bonificação
+      (1 + (str.to_i / 100.0))
+    when :grupamento
+      div, num = str.split('/')
+      num.to_f / div.to_f
     end
   end
 
