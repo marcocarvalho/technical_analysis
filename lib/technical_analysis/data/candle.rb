@@ -3,6 +3,7 @@ module TechnicalAnalysis::Data
     attr_reader :open, :high, :low, :close, :datetime, :volume
 
     include TechnicalAnalysis::RiskManagement::Helpers
+    include TechnicalAnalysis::Data::Helpers::Candle
 
     autoload :Quote, 'technical_analysis/data/candle/quote'
 

@@ -55,6 +55,53 @@ describe TechnicalAnalysis::Data::Candle do
     end
   end
 
+  context 'Corrections' do
+    let(:params) { [{date: '2012-10-10', open: 10, high: '20', low: 30, close: 40, volume: 1000.0}] }
+    it 'shoudl initialize candle and ignore unknow parameters' do
+      subject.apply_factor(2)
+      subject.open.should == 20.0
+      subject.high.should == 40.0
+      subject.low.should == 60.0
+      subject.close.should == 80.0
+      subject.volume.should == 2000.0
+    end
+
+    it 'should apply faction of factors' do
+      subject.apply_factor('0.5')
+      subject.open.should   == 5.0
+      subject.high.should   == 10.0
+      subject.low.should    == 15.0
+      subject.close.should  == 20.0
+      subject.volume.should == 500.0
+    end
+
+    context '#quote model' do
+      let(:params) { { date: '2012-10-10', open: 10, high: 20, low: 30, close: 40, volume: 1000 } }
+      subject { Quote.new(params) }
+      it '#apply_factor' do
+        subject.apply_factor('0.5')
+        subject.open.should   == 5.0
+        subject.high.should   == 10.0
+        subject.low.should    == 15.0
+        subject.close.should  == 20.0
+        subject.volume.should == 500.0          
+      end
+    end
+
+    context '#quote model' do
+      let(:params) { { date: '2012-10-10', open: 10, high: 20, low: 30, close: 40, volume: 1000 } }
+      subject { HistoricalQuote.new(params) }
+      it '#apply_factor' do
+        subject.apply_factor('0.5')
+        subject.open.should   == 5.0
+        subject.high.should   == 10.0
+        subject.low.should    == 15.0
+        subject.close.should  == 20.0
+        subject.volume.should == 500.0          
+      end
+    end
+  end
+
   context 'Hash initialize with missing parameters' do
     let(:params) { [{time: '2012-10-10', open: 10, high: 20, low: 30, bugabu: 'xxxx'}] }
     it 'shoudl initialize candle and ignore unknow parameters' do
