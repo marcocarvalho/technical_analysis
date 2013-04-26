@@ -84,7 +84,7 @@ module TechnicalAnalysis::Data
     end
 
     def parse_price_in(v)
-      if [:open, :high, :low, :close].include?(v)
+      if [:open, :high, :low, :close, :volume].include?(v)
         historical_quote.send(v)
       elsif v.to_s =~ /(near|above|below)_(.+)/
         cmd = $1.to_sym
