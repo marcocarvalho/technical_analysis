@@ -1,22 +1,24 @@
 module TechnicalAnalysis::Data
   class ValueAdjustment
     attr_writer   :symbol, :date_in, :price_in, :quantity, :date_out, :money_in
-    attr_accessor :change
+    attr_accessor :change, :price_tolerance
     def initialize(sym, dt_in, opts = {})
       options = {
         price_in: :close,
         quantity: :default,
-        money_in: 0
+        money_in: 0,
+        price_tolerance: 0.1
         }.merge(opts)
 
-      @date_out = options[:date_out]
-      @date_in  = dt_in
-      @symbol   = sym
-      @price_in = options[:price_in]
-      @money_in = options[:money_in]
-      @quantity = options[:quantity]
-      @change   = 0
-      @parsed   = {}
+      @date_out        = options[:date_out]
+      @date_in         = dt_in
+      @symbol          = sym
+      @price_in        = options[:price_in]
+      @money_in        = options[:money_in]
+      @quantity        = options[:quantity]
+      @price_tolerance = options[:price_tolerance]
+      @change          = 0
+      @parsed          = {}
     end
 
     def parsed?(field)
@@ -96,10 +98,6 @@ module TechnicalAnalysis::Data
       else
         0
       end
-    end
-
-    def price_tolerance
-      0.1
     end
 
     def price_near(candle_notation_price)
