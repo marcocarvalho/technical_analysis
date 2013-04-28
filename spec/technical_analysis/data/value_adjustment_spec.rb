@@ -75,5 +75,14 @@ describe TechnicalAnalysis::Data::ValueAdjustment do
     it 'should return price above given notation' do
       (20..30).include?(subject.price_below(:open)).should be_true
     end
+
+    it 'should call price_above|below|near in parse price' do
+      subject.should_receive(:price_below).with(:open).and_return(1.1)
+      subject.should_receive(:price_near).with(:close).and_return(1.2)
+      subject.should_receive(:price_above).with(:open).and_return(1.3)
+      subject.parse_price_in(:below_open).should == 1.1
+      subject.parse_price_in(:near_close).should == 1.2
+      subject.parse_price_in(:above_open).should == 1.3
+    end
   end
 end
