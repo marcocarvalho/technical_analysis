@@ -87,11 +87,41 @@ module TechnicalAnalysis::Data
       if [:open, :high, :low, :close, :volume].include?(v)
         historical_quote.send(v)
       elsif v.to_s =~ /(near|above|below)_(.+)/
-        cmd = $1.to_sym
-        val = 1
+        cmd = $2.to_sym
+        if [:open, :high, :low, :close].include?(cmd)
+          send("price_#{$1}", cmd)
+        else
+          0
+        end
       else
         0
       end
+    end
+
+    def price_tolerance
+      0.1
+    end
+
+    def price_near(candle_notation_price)
+      price = historical_quote.send(candle_notation_price)
+      tolerance = price * price_tolerance
+      seed = SecureRandom.random_number
+
+      (((tolerance * 2) * seed) + (price - tolerance)).round(2)
+    end
+
+    def price_above(candle_notation_price)
+      raise ArgumentError.new 'high cannot be used in this method' if candle_notation_price == :high
+      high     = historical_quote.high
+      price_at = historical_quote.send(candle_notation_price)
+      ((high - price_at) * SecureRandom.random_number) + price_at
+    end
+
+    def price_below(candle_notation_price)
+      raise ArgumentError.new 'low cannot be used in this method' if candle_notation_price == :low
+      low      = historical_quote.low
+      price_at = historical_quote.send(candle_notation_price)
+      ((price_at - low) * SecureRandom.random_number) + low
     end
 
     def parse_date(d)

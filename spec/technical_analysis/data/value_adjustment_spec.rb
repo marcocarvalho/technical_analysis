@@ -55,5 +55,25 @@ describe TechnicalAnalysis::Data::ValueAdjustment do
       subject.parse_price_in(:low).should     == low
       subject.parse_price_in(:volume).should  == volume
     end
+
+    it 'should return price near open' do
+      (27..33).include?(subject.price_near(:open)).should be_true
+    end
+
+    it 'should return price above given notation' do
+      (30..40).include?(subject.price_above(:open)).should be_true
+    end
+
+    it 'should raise error if high is given to price_above' do
+      expect { subject.price_above(:high) }.to raise_error('high cannot be used in this method')
+    end
+
+    it 'should raise error if low is given to price_below' do
+      expect { subject.price_below(:low) }.to raise_error('low cannot be used in this method')
+    end
+
+    it 'should return price above given notation' do
+      (20..30).include?(subject.price_below(:open)).should be_true
+    end
   end
 end
