@@ -1,0 +1,16 @@
+
+Testes:
+  Estratégia - Várias
+  Controle de Risco - Vários
+  Log de Operações (com estratégia e controle de risco)
+  Calculos estatísticos
+    Net Profit (valor, %)  == lucro - perdas
+    Win trades (numero, %)
+    Losing Trades (num, %)
+    Gross Profit
+    Gross Loss
+    Avg profit (num, %)
+    Avg loss (num, %)
+    max draw down (maior perda)
+    Recovery factor > 1 (net profit / max draw down)
+    Profit factor > 2 (gross profit / gross loss)
