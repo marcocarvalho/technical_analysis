@@ -1,7 +1,7 @@
 module TechnicalAnalysis::Data
   class ValueAdjustment
-    attr_writer   :symbol, :date_in, :price_in, :quantity, :date_out, :money_in
-    attr_accessor :change, :price_tolerance
+    attr_writer   :symbol, :date_in, :price_in, :quantity, :date_out
+    attr_accessor :change, :price_tolerance, :money_in
     def initialize(sym, dt_in, opts = {})
       options = {
         price_in: :close,
@@ -21,6 +21,17 @@ module TechnicalAnalysis::Data
       @parsed          = {}
     end
 
+    def value_at(date)
+      h = historical_quote_at(date)
+      movs = company.movements.where('ex_at <= ? and ex_at > ?', date, date_in)
+      divs = company.dividents.where('ex_at <= ? and ex_at > ?', date, date_in)
+
+    end
+
+    def quantity_at(date)
+
+    end
+
     def parsed?(field)
       @parsed[field]
     end
@@ -30,10 +41,13 @@ module TechnicalAnalysis::Data
       if @quantity == :default and money_in == 0
         # take default lote qtd. for now 100 will be fine
         @quantity = 100
-      elsif v == :default and money_in > 0
+      elsif @quantity == :default and money_in > 0
+        # change to lote padrão em implemented
+        @change += money_in % 100
+        @quantity = money_in / 100
         # calculate by money_in
       else
-        @quantity = v.to_i
+        @quantity = @quantity.to_i
       end
       @parsed[:quantity] = true
       @quantity
@@ -59,11 +73,6 @@ module TechnicalAnalysis::Data
     end
 
     def company
-      raise 'Company model expected' unless @company.is_a?(Company)
-      @company
-    end
-
-    def company
       @company ||= Company.where(symbol).first
     end
 
@@ -72,6 +81,10 @@ module TechnicalAnalysis::Data
       @historical_quote = HistoricalQuote.where(symbol: symbol, date: date_in).first
       raise "No historical quote for symbol #{symbol} in #{date_in}" if @historical_quote.nil?
       @historical_quote
+    end
+
+    def historical_quote_at(date)
+      HistoricalQuote.where(symbol: symbol, date: date).first
     end
 
     def price_in

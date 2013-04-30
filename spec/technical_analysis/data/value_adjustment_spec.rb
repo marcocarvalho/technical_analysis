@@ -85,4 +85,22 @@ describe TechnicalAnalysis::Data::ValueAdjustment do
       subject.parse_price_in(:above_open).should == 1.3
     end
   end
+
+  context '#quantity' do
+    context 'default' do
+      let(:money_in) { 0 }
+      let(:quantity) { :default }
+      it 'should be 100' do
+        subject.quantity.should == 100
+      end
+    end
+    context 'by the money' do
+      let(:quantity) { :default }
+      let(:money_in) { 5050 }
+      it 'should be 500 with change' do
+        subject.quantity.should == 50
+        subject.change.should == 50
+      end
+    end
+  end
 end

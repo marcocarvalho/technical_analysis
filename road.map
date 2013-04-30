@@ -14,3 +14,30 @@ Testes:
     max draw down (maior perda)
     Recovery factor > 1 (net profit / max draw down)
     Profit factor > 2 (gross profit / gross loss)
+
+X testes com determinado papel com determinado controle de risco
+
+BuySinal
+  -> Portfolio
+  -> RiskManagement
+  <- Buy?
+  <- stop_loss
+  <- stop_gain
+
+Strategy
+  minimal_ticks
+  -> CandleArray
+  <- BuySignal
+
+Setup
+  Name
+  period
+  strategy
+  risk_management
+
+RiskManagement
+  identifier
+  quantity_or_value?
+  quantity
+  value
+
