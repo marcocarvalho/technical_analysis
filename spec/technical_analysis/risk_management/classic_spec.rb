@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe TechnicalAnalysis::RiskManagement::Classic do
-  let(:portfolio) { Portfolio.new(cash: 10_000.0) }
+  let(:cash) { 10_000.0 }
+  let(:portfolio) { Portfolio.new(cash: cash) }
   let(:max) { 20.0 }
   let(:min) { 18.5 }
   let(:stop_loss) { max - ( (max - min) * 1.33 ) }
@@ -14,10 +15,20 @@ describe TechnicalAnalysis::RiskManagement::Classic do
   end
 
   it 'calc quantity' do
-    subject.quantity.should == 20 # portfolio.cash * max_loss / (trade_at - stop_loss)
+    subject.quantity.should == 523 # 523 * 19.1 < 10_000
   end
 
   it 'should calculate value by quantity' do
-    subject.value.should == 10
+    subject.value.should be <= portfolio.cash
+    subject.value.should == 523 * 19.1
+  end
+
+  context 'small max loss to a grather cash' do
+    let(:cash) { 250_000.0 }
+    let(:max_loss) { 0.02 }
+    it 'should ' do
+      subject.quantity.should == 4566
+      subject.value.should == 4566 * 19.1
+    end
   end
 end

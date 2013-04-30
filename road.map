@@ -17,10 +17,12 @@ Testes:
 
 X testes com determinado papel com determinado controle de risco
 
-BuySinal
+Sinal
   -> Portfolio
   -> RiskManagement
-  <- Buy?
+  <- signal (buy|sell|none)
+  <- quantity
+  <- value
   <- stop_loss
   <- stop_gain
 
