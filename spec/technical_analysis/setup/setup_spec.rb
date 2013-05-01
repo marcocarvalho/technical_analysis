@@ -12,4 +12,12 @@ describe TechnicalAnalysis::Setup do
       subject.index.should == { Time.parse('2012-04-01') => 0, Time.parse('2012-04-02') => 1, Time.parse('2012-04-03') => 2 }
     end
   end
+
+  context 'inhited' do
+    Kernel.send(:remove_const, :C) if Kernel.const_defined?(:C)
+    class C < TechnicalAnalysis::Setup; end
+    it 'should list inhited classes' do
+      TechnicalAnalysis::Setup.all.include?(C).should be_true
+    end
+  end
 end

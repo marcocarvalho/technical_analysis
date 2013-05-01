@@ -7,6 +7,10 @@ module TechnicalAnalysis
       @klasses << klass
     end
 
+    def self.all
+      @klasses ||= []
+    end
+
     def initialize(candle_arr, opts = {})
       @options      = opts
       @candle_array = candle_arr
