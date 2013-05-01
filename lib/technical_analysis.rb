@@ -11,6 +11,7 @@ module TechnicalAnalysis
   autoload :Data, 'technical_analysis/data'
   autoload :Analysis, 'technical_analysis/analysis'
   autoload :RiskManagement, 'technical_analysis/risk_management'
+  autoload :Setup, 'technical_analysis/setup'
 end
 
 autoload :Portfolio, 'technical_analysis/models/portfolio'
