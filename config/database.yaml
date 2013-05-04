@@ -13,5 +13,5 @@ production:
   timeout: 5000
   database: ta
   username: ta
-  password: H2S-Wr-m
-  host: 198.199.96.235
+  password: 'zaq1xsw2cde3!@#'
+  host: localhost
