@@ -1,4 +1,4 @@
-require "bundler/capistrano"
+# require "bundler/capistrano"
 
 set :application, "technical_analysis"
 set :repository,  "git@github.com:marcocarvalho/technical_analysis.git"
