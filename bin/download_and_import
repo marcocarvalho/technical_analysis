@@ -1,0 +1,8 @@
+#!/bin/bash
+
+file=COTAHIST_D02052013
+wget http://www.bmfbovespa.com.br/InstDados/SerHist/${file}.ZIP
+unzip ${file}.ZIP
+bundle exec import_bovespa ${file}.TXT
+mv import.csv historical_quotes
+mysqlimport --fields-terminated-by=, --ignore-lines=1 --columns=date,symbol,period,open,high,low,close,volume,operations,created_at,updated_at -u root -pH2S-Wr-m -L ta ./historical_quotes

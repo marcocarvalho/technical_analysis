@@ -10,7 +10,7 @@ log = Logger.new(STDOUT)
 
 i = ImportBovespa.new(ARGV[0])
 
-csv = CSV.new(File.new('import.csv', 'w+'))
+csv = CSV.new(File.new('import.csv', 'a'))
 csv << [:date, :symbol, :period, :open, :high, :low, :close, :volume, :operations, :create_at, :updated_at]
 
 stats = Hash.new(0)
