@@ -39,7 +39,7 @@ class ImportBovespaCompanyInfo
       log("Found #{movements.count} movements for #{symbol}")
       dividends = company_dividends(raw)
       log("Found #{dividends.count} dividends for #{symbol}")
-      cia = Company.where(symbol: symbol).first_or_create
+      cia = Company.where(cvm_id: cvm_id).first_or_create
       movements.each { |v| cia.movements.new(v) }
       dividends.each { |v| cia.dividends.new(v) }
       cia.save

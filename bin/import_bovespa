@@ -1,9 +1,6 @@
-require 'technical_analysis'
-require 'activerecord-import'
-require "activerecord-import/base"
+require 'technical_analysis/data/import_bovespa'
 require 'csv'
 require 'tempfile'
-ActiveRecord::Import.require_adapter('sqlite3')
 require 'logger'
 
 log = Logger.new(STDOUT)
