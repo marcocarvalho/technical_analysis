@@ -30,28 +30,72 @@ class ImportBovespaCompanyInfo
     end
 
     companies.each do |symbol|
-      log("Getting CVM_ID for #{symbol}")
-      cvm_id = get_cvm_id(symbol)
-      next unless cvm_id
-      raw       = raw_company_info(cvm_id)
+      symb = CompanySymbols.where(symbol: symbol).first
+      if symb
+        if (symb.updated_at || Time.new) > (Time.new - (60 * 60 * 24 * 30))
+          log("#{symbol} was updated_at recently (30 days of cool down)")
+          next
+        end
+        cya = symb.company
+      else
+        log('New symbol, scraping...')
+        log("Getting CVM_ID for #{symbol}")
+        cvm_id = get_cvm_id(symbol)
+        next unless cvm_id
+        cia = Company.where(cvm_id: cvm_id).first_or_create
+      end
+      unless cia.new_record?
+        cia.movements.destroy_all
+        cia.dividends.destroy_all
+        cia.company_symbols.destroy_all
+      end
+      raw      = raw_company_info(cvm_id)
+      name      = company_name(raw)
+      symbols   = company_symbols(raw)
+      symbols << symbol unless symbols.include?(symbol)
+      raw       = raw_company_movements(cvm_id)
       log("Found #{cvm_id} for #{symbol}")
       movements = company_movements(raw)
       log("Found #{movements.count} movements for #{symbol}")
       dividends = company_dividends(raw)
       log("Found #{dividends.count} dividends for #{symbol}")
-      cia = Company.where(cvm_id: cvm_id).first_or_create
+      cia.name = name
       movements.each { |v| cia.movements.new(v) }
       dividends.each { |v| cia.dividends.new(v) }
+      symbols.each { |c| cia.add_symbol(c)}
       cia.save
     end
   end
 
+  def self.update_all
+    dt  = HistoricalQuote.last.date
+    obj = new(HistoricalQuote.select(:symbol).where('date >= ?', dt.strftime('%Y-%m-%d')).uniq.map { |a| a.symbol })
+    obj.scrap
+  end
+
   def raw_company_info(cvm_id)
+    f = Nokogiri::HTML(open("http://www.bmfbovespa.com.br/cias-listadas/empresas-listadas/ResumoEmpresaPrincipal.aspx?codigoCvm=#{cvm_id}&idioma=pt-br"))
+    src = f.search('iframe').first.get_attribute('src')
+    Nokogiri::HTML(open("http://www.bmfbovespa.com.br#{src.sub('../..', '')}"))
+  end
+
+  def raw_company_movements(cvm_id)
     Nokogiri::HTML(open("http://www.bmfbovespa.com.br/cias-listadas/empresas-listadas/ResumoEventosCorporativos.aspx?codigoCvm=#{cvm_id}&tab=3&idioma=pt-br"))
   end
 
+  def company_name(raw)
+    raw.search('div.tabelaSemBorda table').search('tr').first.search('td.Dado').first.content.strip
+  end
+
+  def company_symbols(raw)
+    raw.search('a.LinkCodNeg').map { |i| i.content }.uniq
+  end
+
   def company_movements(raw)
-    first, second = raw.search('table.MasterTable_SiteBmfBovespa')
+    first = raw.search('div#divBonificacao').first
+    return [] if first.nil?
+
+    first = first.search('table.MasterTable_SiteBmfBovespa')
 
     movs = []
 
@@ -70,7 +114,9 @@ class ImportBovespaCompanyInfo
   end
 
   def company_dividends(raw)
-    first, second = raw.search('table.MasterTable_SiteBmfBovespa')
+    second = raw.search('div#divDividendo').first
+    return [] if second.nil?
+    second = second.search('table.MasterTable_SiteBmfBovespa')
     movs = []
     trs = second.search('tr')
     (1..(trs.size - 1)).each do |idx|
