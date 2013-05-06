@@ -1,9 +1,9 @@
 class CreateHistoricalQuote < ActiveRecord::Migration
   def change
     create_table :historical_quotes do |t|
+      t.datetime :date,     :null => false
       t.string   :symbol,   :null => false
       t.string   :period,   :null => false
-      t.datetime :date,     :null => false
       t.decimal  :open,     :precision => 20, :scale => 2
       t.decimal  :high,     :precision => 20, :scale => 2
       t.decimal  :low,      :precision => 20, :scale => 2
