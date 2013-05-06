@@ -67,9 +67,25 @@ class ImportBovespaCompanyInfo
     end
   end
 
+  def get_company_by_ticker(symbol)
+    Company.where(ticker: company_ticker).first_or_create
+  end
+
+  def company_ticker(symbol)
+    if symbol.to_s =~ /^([A-Z]{4})(\d)$/
+      $1
+    end
+  end
+
   def self.update_all
     dt  = HistoricalQuote.last.date
-    obj = new(HistoricalQuote.select(:symbol).where('date >= ?', dt.strftime('%Y-%m-%d')).uniq.map { |a| a.symbol })
+    hash = Hash.new
+    HistoricalQuote.select(:symbol).where('date >= ?', dt.strftime('%Y-%m-%d')).uniq.each do |a|
+      if a.symbol =~ /^([A-Z]{4})(\d)$/
+        hash[$1] = $1 + $2
+      end
+    end
+    obj = new(hash.values)
     obj.scrap
   end
 
