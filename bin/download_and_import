@@ -1,0 +1,32 @@
+#!/bin/bash
+
+file=COTAHIST_D$(date +%d%m%Y)
+unzip=/usr/bin/unzip
+wget=/usr/bin/wget
+mysqlimport=/usr/bin/mysqlimport
+
+cd /var/app/technical_analysis/current
+
+$wget http://www.bmfbovespa.com.br/InstDados/SerHist/${file}.ZIP
+
+if [ -f ${file}.ZIP ]; then
+  $unzip ${file}.ZIP
+
+  if [ -f ${file}.TXT ]; then
+    bundle exec import_bovespa ${file}.TXT
+
+    if [ -f import.csv ]; then
+      mv import.csv historical_quotes
+      $mysqlimport --fields-terminated-by=, --ignore-lines=1 --columns=date,symbol,period,open,high,low,close,volume,operations,created_at,updated_at -u root -pH2S-Wr-m -L ta ./historical_quotes
+      rm historical_quotes
+    else
+      echo "[$(date)] error making import.csv from ${FILE}.TXT"
+    fi
+  else
+    echo "[$(date)] error unziping ${FILE}.zip"
+  fi
+  rm $file.*
+else
+  echo "[$(date)] nothing to do"
+fi
+

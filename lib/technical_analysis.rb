@@ -13,7 +13,10 @@ module TechnicalAnalysis
   autoload :RiskManagement, 'technical_analysis/risk_management'
 end
 
+require 'technical_analysis/setup'
+
 autoload :Portfolio, 'technical_analysis/models/portfolio'
+autoload :CompanySymbol,   'technical_analysis/models/company_symbol'
 autoload :Company,   'technical_analysis/models/company'
 autoload :ImportBovespa, 'technical_analysis/data/import_bovespa'
 autoload :Movement,   'technical_analysis/models/movement'
