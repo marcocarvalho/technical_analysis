@@ -14,6 +14,6 @@ class CreateHistoricalQuote < ActiveRecord::Migration
       t.timestamps
     end
 
-    add_index :quotes, [:symbol, :period]
+    add_index :historical_quotes, [:symbol, :period]
   end
 end
