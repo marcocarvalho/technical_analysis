@@ -1,4 +1,4 @@
-require 'ffi/talib'
+require 'talib'
 require "technical_analysis/version"
 require 'time'
 require 'yahoo_stock'
