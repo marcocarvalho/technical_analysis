@@ -30,45 +30,46 @@ class ImportBovespaCompanyInfo
     end
 
     companies.each do |symbol|
-      symb = CompanySymbols.where(symbol: symbol).first
-      if symb
-        if (symb.updated_at || Time.new) > (Time.new - (60 * 60 * 24 * 30))
-          log("#{symbol} was updated_at recently (30 days of cool down)")
+      cya = get_company_by_ticker(symbol)
+      next if cya.nil?
+      if !cya.cvm_id.nil?
+        if (cya.updated_at || Time.new) > (Time.new - (60 * 60 * 24 * 30))
+          log("#{cya.ticker} was updated_at recently (30 days of cool down)")
           next
         end
-        cya = symb.company
-      else
-        log('New symbol, scraping...')
-        log("Getting CVM_ID for #{symbol}")
-        cvm_id = get_cvm_id(symbol)
-        next unless cvm_id
-        cia = Company.where(cvm_id: cvm_id).first_or_create
-      end
-      unless cia.new_record?
         cia.movements.destroy_all
         cia.dividends.destroy_all
         cia.company_symbols.destroy_all
+      else
+        log("Getting CVM_ID for #{symbol}")
+        cvm_id = get_cvm_id(symbol)
+        next unless cvm_id
+        log("Found #{cvm_id} for #{symbol}")
+        cya.cvm_id = cvm_id
       end
-      raw      = raw_company_info(cvm_id)
-      name      = company_name(raw)
+      raw       = raw_company_info(cvm_id)
+      cya.name  = company_name(raw)
       symbols   = company_symbols(raw)
       symbols << symbol unless symbols.include?(symbol)
       raw       = raw_company_movements(cvm_id)
-      log("Found #{cvm_id} for #{symbol}")
       movements = company_movements(raw)
       log("Found #{movements.count} movements for #{symbol}")
       dividends = company_dividends(raw)
       log("Found #{dividends.count} dividends for #{symbol}")
-      cia.name = name
-      movements.each { |v| cia.movements.new(v) }
-      dividends.each { |v| cia.dividends.new(v) }
-      symbols.each { |c| cia.add_symbol(c)}
-      cia.save
+      movements.each { |v| cya.movements.new(v) }
+      dividends.each { |v| cya.dividends.new(v) }
+      symbols.each { |c| cya.add_symbol(c)}
+      cya.save
     end
   end
 
   def get_company_by_ticker(symbol)
-    Company.where(ticker: company_ticker).first_or_create
+    t = company_ticker(symbol)
+    if t
+      Company.where(ticker: t).first_or_create
+    else
+      nil
+    end
   end
 
   def company_ticker(symbol)
@@ -122,9 +123,23 @@ class ImportBovespaCompanyInfo
       deliberated_at = parse_date(tds[1].content)
       ex_at          = parse_date(tds[2].content)
       quantity       = parse_quantity(tds[3].search('.label').first.content, type)
+      next if quantity == 1
       credit_at      = parse_date(tds[4].content)
       obs            = tds[5].search('.label').first.content
-      movs << { earning_type: type, deliberated_at: deliberated_at, ex_at: ex_at, factor: quantity, credit_at: credit_at, obs: obs }
+      if quantity.nil? and (type == :grupamento or type == :desdobramento)
+        if obs =~ /([0-9\.]+)\/(\d+)\s*\(ON\)/
+          quantity = $2.to_f / $1.gsub('.', '').to_f
+          movs << { earning_type: type, deliberated_at: deliberated_at, ex_at: ex_at, factor: quantity, credit_at: credit_at, obs: obs, kind: 'ON' }
+        end
+        if obs =~ /([0-9\.]+)\/(\d+)\s*\(PN\)/
+          quantity = $2.to_f / $1.gsub('.', '').to_f
+          movs << { earning_type: type, deliberated_at: deliberated_at, ex_at: ex_at, factor: quantity, credit_at: credit_at, obs: obs, kind: 'PN' }
+        end
+        next
+      else
+        kind = ''
+      end
+      movs << { earning_type: type, deliberated_at: deliberated_at, ex_at: ex_at, factor: quantity, credit_at: credit_at, obs: obs, kind: kind }
     end
     movs
   end
@@ -171,7 +186,13 @@ class ImportBovespaCompanyInfo
       (1 + (str.to_i / 100.0))
     when :grupamento
       div, num = str.split('/')
-      num.to_f / div.to_f
+      if div.to_f != 0.0
+        num.to_f / div.to_f
+      else
+        nil
+      end
+    else
+      1
     end
   end
 
