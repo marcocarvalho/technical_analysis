@@ -84,7 +84,7 @@ describe TechnicalAnalysis::Data::Candle do
         subject.high.should   == 10.0
         subject.low.should    == 15.0
         subject.close.should  == 20.0
-        subject.volume.should == 500.0          
+        subject.volume.should == 500.0
       end
     end
 
@@ -97,7 +97,7 @@ describe TechnicalAnalysis::Data::Candle do
         subject.high.should   == 10.0
         subject.low.should    == 15.0
         subject.close.should  == 20.0
-        subject.volume.should == 500.0          
+        subject.volume.should == 500.0
       end
     end
   end

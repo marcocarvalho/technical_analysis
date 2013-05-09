@@ -1,5 +1,6 @@
 module TechnicalAnalysis::Data
   class ValueAdjustment
+    include TechnicalAnalysis::Data::Helpers
     attr_writer   :symbol, :date_in, :price_in, :quantity, :date_out
     attr_accessor :change, :price_tolerance, :money_in
     def initialize(sym, dt_in, opts = {})
@@ -114,25 +115,15 @@ module TechnicalAnalysis::Data
     end
 
     def price_near(candle_notation_price)
-      price = historical_quote.send(candle_notation_price)
-      tolerance = price * price_tolerance
-      seed = SecureRandom.random_number
-
-      (((tolerance * 2) * seed) + (price - tolerance)).round(2)
+      super(historical_quote, candle_notation_price, price_tolerance: price_tolerance)
     end
 
     def price_above(candle_notation_price)
-      raise ArgumentError.new 'high cannot be used in this method' if candle_notation_price == :high
-      high     = historical_quote.high
-      price_at = historical_quote.send(candle_notation_price)
-      ((high - price_at) * SecureRandom.random_number) + price_at
+      super(historical_quote, candle_notation_price)
     end
 
     def price_below(candle_notation_price)
-      raise ArgumentError.new 'low cannot be used in this method' if candle_notation_price == :low
-      low      = historical_quote.low
-      price_at = historical_quote.send(candle_notation_price)
-      ((price_at - low) * SecureRandom.random_number) + low
+      super(historical_quote, candle_notation_price)
     end
 
     def parse_date(d)
