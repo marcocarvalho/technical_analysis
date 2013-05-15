@@ -1,7 +1,8 @@
 #
 module TechnicalAnalysis
   class Setup
-    attr_accessor :options, :candle_array
+    attr_accessor :options, :candle_array, :riskmanagement
+    include TechnicalAnalysis::Data::Helpers
     def self.inherited(klass)
       @klasses ||= []
       @klasses << klass
@@ -12,8 +13,10 @@ module TechnicalAnalysis
     end
 
     def initialize(candle_arr, opts = {})
-      @options      = opts
-      @candle_array = candle_arr
+      @options        = opts
+      @candle_array   = candle_arr
+      @riskmanagement = opts[:riskmanagement]
+      raise ArgumentError.new("Candle Array is too short. Expected #{minimal_ticks} as minimal size") if @candle_array.size < minimal_ticks
     end
 
     def index(reindex = false)
@@ -32,6 +35,10 @@ module TechnicalAnalysis
 
     def end_at(date_or_pos = nil)
       parse_date_or_position(date_or_pos || options[:end_at]) || (candle_array.count - 1)
+    end
+
+    def minimal_ticks
+      2
     end
 
     private

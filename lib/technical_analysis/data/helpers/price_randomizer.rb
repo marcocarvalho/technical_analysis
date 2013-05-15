@@ -1,7 +1,12 @@
 module TechnicalAnalysis::Data
   module Helpers
+    def price_between(v1, v2)
+      seed = SecureRandom.random_number
+      ((v2 - v1) * seed) + v1
+    end
+
     def price_near(candle, candle_notation_price, opts = { })
-      opts = opts.merge { price_tolerance: 0.1 }
+      opts = { price_tolerance: 0.1 }.merge opts
       price = candle.send(candle_notation_price)
       tolerance = price * opts[:price_tolerance]
       seed = SecureRandom.random_number

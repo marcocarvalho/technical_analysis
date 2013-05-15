@@ -3,7 +3,7 @@ module TechnicalAnalysis
     class Classic < Abstract
       # Max Risk share
 
-      attr_accessor :stop_loss, :max_loss, :trade_at, :type
+      attr_accessor :stop_gain, :stop_loss, :max_loss, :trade_at, :type
 
       def initialize(*args)
         super(*args)
@@ -36,6 +36,10 @@ module TechnicalAnalysis
 
       def value
         trade_at * quantity
+      end
+
+      def trade?
+        quantity > 0
       end
     end
   end

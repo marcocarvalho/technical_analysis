@@ -12,6 +12,10 @@ task :migrate => :environment do
   ActiveRecord::Migrator.migrate('db/migrate', ENV["VERSION"] ? ENV["VERSION"].to_i : nil )
 end
 
+task :rollback => :environment do
+  ActiveRecord::Migrator.rollback('db/migrate')
+end
+
 task :environment do
   ActiveRecord::Base.establish_connection(YAML::load(File.open('config/database.yaml'))[ ENV['RACK_ENV'] || 'development'])
   ActiveRecord::Base.logger = Logger.new(STDOUT)
