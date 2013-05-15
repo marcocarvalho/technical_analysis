@@ -24,8 +24,7 @@ autoload :Dividend,   'technical_analysis/models/dividend'
 autoload :Quote, 'technical_analysis/models/quote'
 autoload :HistoricalQuote, 'technical_analysis/models/historical_quote'
 autoload :ImportBovespaCompanyInfo, 'technical_analysis/data/import_bovespa_company_info'
-
-#autoload :Trade, 'technical_analysis/models/trade'
+autoload :Trade, 'technical_analysis/models/trade'
 
 
 class Array

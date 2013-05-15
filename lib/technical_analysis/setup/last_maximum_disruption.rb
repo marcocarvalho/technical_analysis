@@ -45,6 +45,10 @@ module TechnicalAnalysis
       #save stuff
     end
 
+    def portfolio
+      riskmanagement.portfolio
+    end
+
     def close_stops(idx)
       delete = []
       now = candle_array[idx]
@@ -52,7 +56,7 @@ module TechnicalAnalysis
       block = Proc.new do |key, trade|
         if (now.low..now.high).include?(key)
           trade_at  = price_near(key, price_tolerance: 0.01)
-          trade_out = profile.trades.create(
+          trade_out = portfolio.trades.create(
                symbol:    trade.symbol,
                date:      now.date,
                quantity:  trade.quantity,
@@ -87,11 +91,8 @@ module TechnicalAnalysis
           riskmanagement.stop_gain = stop_gain(idx)
           riskmanagement.trade_at  = price_below(now, :high)
           if riskmanagement.trade?
-            portfolio = riskmanagement.portfolio
-            # TODO: multiple symbols? It's necessary?
-            symbol    = portfolio.trade_with.first
-            trade     = profile.trades.create(
-                           symbol:    symbol,
+            trade     = portfolio.trades.create(
+                           symbol:    now.symbol,
                            date:      now.date,
                            quantity:  riskmanagement.quantity,
                            type:      :buy,

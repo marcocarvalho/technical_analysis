@@ -19,6 +19,11 @@ module TechnicalAnalysis
       raise ArgumentError.new("Candle Array is too short. Expected #{minimal_ticks} as minimal size") if @candle_array.size < minimal_ticks
     end
 
+    def price_near(price, opts = {})
+      opts = { price_tolerance: 0.01 }.merge(opts)
+      super(TechnicalAnalysis::Data::Candle.new(close: price), :close, opts)
+    end
+
     def index(reindex = false)
       return @index if @index.is_a?(Hash) and reindex == false
       @index = {}
