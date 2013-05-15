@@ -22,13 +22,13 @@ module TechnicalAnalysis
       end
 
       def max_risk
-        (portfolio.cash * max_loss)
+        (portfolio.cash.to_f * max_loss)
       end
 
       def quantity
         risk = max_risk / (trade_at - stop_loss)
-        if risk * trade_at > portfolio.cash
-          (portfolio.cash / trade_at.to_f).to_i
+        if risk * trade_at > portfolio.cash.to_f
+          (portfolio.cash.to_f / trade_at.to_f).to_i
         else
           risk.to_i
         end
