@@ -35,7 +35,14 @@ describe 'Portfolio and trades' do
 
   context 'portfolio cash up and down' do
     it 'should substract cash in portfolio when buy' do
-      subtotal.portfolio.cash.should == cash - (quantity * price) - brokerage
+      subject.portfolio.cash.should == cash - (quantity * price) - brokerage
+    end
+  end
+
+  context 'sell' do
+    let(:type) { :sell }
+    it 'should add cash in portfolio when sell' do
+      subject.portfolio.cash.should == cash + (quantity * price) - brokerage
     end
   end
 end

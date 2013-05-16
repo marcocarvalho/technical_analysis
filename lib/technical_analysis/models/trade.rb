@@ -17,7 +17,7 @@ class Trade < ActiveRecord::Base
     end
 
     if total.nil? or total == 0
-      self.total = quantity * price + brokerage
+      self.total  = quantity * price - brokerage
     end
   end
 end
