@@ -32,4 +32,10 @@ describe 'Portfolio and trades' do
       subject.subtotal.to_f.should == subtotal
     end
   end
+
+  context 'portfolio cash up and down' do
+    it 'should substract cash in portfolio when buy' do
+      subtotal.portfolio.cash.should == cash - (quantity * price) - brokerage
+    end
+  end
 end
