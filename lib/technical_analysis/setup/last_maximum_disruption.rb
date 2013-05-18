@@ -21,12 +21,15 @@ module TechnicalAnalysis
     end
 
     def range
-      (1..(candle_array.size - 1))
+      if minimal_ticks?
+        (1..(candle_array.size - 1))
+      else
+        []
+      end
     end
 
     def run_setup
       ret = []
-      return ret if minimal_ticks?
       range.each do |idx|
         ret << signal(idx) if entry_point?(idx)
       end
