@@ -44,6 +44,10 @@ module TechnicalAnalysis
       2
     end
 
+    def minimal_ticks?
+      candle_array.size >= minimal_ticks
+    end
+
     private
     def parse_date_or_position(val)
       if val.is_a?(Time)

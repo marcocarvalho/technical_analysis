@@ -32,9 +32,11 @@ module TechnicalAnalysis
       end
     end
 
+    minimal_ticks?
+
     def run_setup
       ret = []
-      return ret if candle_array.size < minimal_ticks
+      return ret if minimal_ticks?
       candle_array.each_index do |idx|
         next if idx == 0
         if entry_point?(idx)
