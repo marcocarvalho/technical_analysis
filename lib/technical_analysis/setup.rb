@@ -14,7 +14,7 @@ module TechnicalAnalysis
 
     def initialize(opts = {})
       @options        = opts
-      @candle_array   = opts[:candle_array]
+      @candle_array   = opts[:candle_array] || []
     end
 
     def price_near(price, opts = {})
