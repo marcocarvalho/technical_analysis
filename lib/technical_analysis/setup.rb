@@ -15,8 +15,6 @@ module TechnicalAnalysis
     def initialize(candle_arr, opts = {})
       @options        = opts
       @candle_array   = candle_arr
-      @riskmanagement = opts[:riskmanagement]
-      raise ArgumentError.new("Candle Array is too short. Expected #{minimal_ticks} as minimal size") if @candle_array.size < minimal_ticks
     end
 
     def price_near(price, opts = {})
