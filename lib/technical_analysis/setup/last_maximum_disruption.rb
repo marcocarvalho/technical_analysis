@@ -32,17 +32,16 @@ module TechnicalAnalysis
       end
     end
 
-    minimal_ticks?
+    def signal(idx)
+      { candle: candle_array[idx], stop_gain: stop_gain(idx), stop_loss: stop_loss(idx) }
+    end
 
     def run_setup
       ret = []
       return ret if minimal_ticks?
       candle_array.each_index do |idx|
         next if idx == 0
-        if entry_point?(idx)
-          signal = { candle: candle_array[idx], stop_gain: stop_gain(idx), stop_loss: stop_loss(idx) }
-          ret << signal
-        end
+        ret << signal if entry_point?(idx)
       end
       ret
     end
