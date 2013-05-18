@@ -6,8 +6,8 @@ module TechnicalAnalysis
       cdl.send attribute
     end
 
-    def trade?(price, idx)
-      candle(idx, :high) < price
+    def trade?(price, idx = -1)
+      candle_array[idx].high < price
     end
 
     def stop_loss(idx)
