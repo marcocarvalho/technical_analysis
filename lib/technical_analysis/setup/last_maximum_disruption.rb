@@ -20,11 +20,14 @@ module TechnicalAnalysis
       { candle: candle_array[idx], stop_gain: stop_gain(idx), stop_loss: stop_loss(idx) }
     end
 
+    def range
+      (1..(candle_array.size - 1))
+    end
+
     def run_setup
       ret = []
       return ret if minimal_ticks?
-      candle_array.each_index do |idx|
-        next if idx == 0
+      range.each do |idx|
         ret << signal(idx) if entry_point?(idx)
       end
       ret
