@@ -1,35 +1,19 @@
 module TechnicalAnalysis
   class LastMaximumDisruption < Setup
-    def trade?(price, idx = nil)
-      if idx
-        candle_array[idx].high < price
-      else
-        candle_array.last.high < price
-      end
+    def trade?(price, idx)
+      candle_array[idx].high < price
     end
 
-    def stop_loss(idx = nil)
-      if idx
-        candle_array[idx].low.round(2)
-      else
-        candle_array.last.low.round(2)
-      end
+    def stop_loss(idx)
+      candle_array[idx].low.round(2)
     end
 
-    def stop_gain(idx = nil)
-      if idx
-        (candle_array[idx].high * 1.07).round(2)
-      else
-        (candle_array.last.high * 1.07).round(2)
-      end
+    def stop_gain(idx)
+      (candle_array[idx].high * 1.07).round(2)
     end
 
-    def entry_point?(idx = nil)
-      if idx
-        candle_array[idx - 1].high < candle_array[idx].high
-      else
-        candle_array[-2].high < candle_array[-1].high
-      end
+    def entry_point?(idx)
+      candle_array[idx - 1].high < candle_array[idx].high
     end
 
     def signal(idx)
