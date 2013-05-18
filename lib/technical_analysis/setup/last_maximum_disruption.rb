@@ -41,7 +41,7 @@ module TechnicalAnalysis
       return ret if minimal_ticks?
       candle_array.each_index do |idx|
         next if idx == 0
-        ret << signal if entry_point?(idx)
+        ret << signal(idx) if entry_point?(idx)
       end
       ret
     end
