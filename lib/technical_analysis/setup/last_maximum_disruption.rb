@@ -1,6 +1,6 @@
 module TechnicalAnalysis
   class LastMaximumDisruption < Setup
-    def trade?(price, idx)
+    def trade?(price, idx = -1)
       candle_array[idx].high < price
     end
 
