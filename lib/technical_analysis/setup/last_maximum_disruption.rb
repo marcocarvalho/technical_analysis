@@ -1,7 +1,13 @@
 module TechnicalAnalysis
   class LastMaximumDisruption < Setup
+    def candle(idx, attribute = nil)
+      cdl = candle_array[idx]
+      return cdl if cdl.nil? or attribute.nil?
+      cdl.send attribute
+    end
+
     def trade?(price, idx)
-      candle_array[idx].high < price
+      candle(idx, :high) < price
     end
 
     def stop_loss(idx)
