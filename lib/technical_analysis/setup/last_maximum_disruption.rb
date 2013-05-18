@@ -29,11 +29,7 @@ module TechnicalAnalysis
     end
 
     def run_setup
-      ret = []
-      range.each do |idx|
-        ret << signal(idx) if entry_point?(idx)
-      end
-      ret
+      range.map { |idx| signal(idx) if entry_point?(idx) }.compact
     end
   end
 end
