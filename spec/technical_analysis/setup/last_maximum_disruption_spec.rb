@@ -9,7 +9,7 @@ describe TechnicalAnalysis::LastMaximumDisruption do
     subject.run_setup.should == [1, 1]
   end
 
-  define '#candle' do
+  context '#candle' do
     context 'Should return nil when index does not match item' do
       subject { TechnicalAnalysis::LastMaximumDisruption.new [:one_item_only] }
 
