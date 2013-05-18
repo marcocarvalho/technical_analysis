@@ -5,7 +5,7 @@ include TechnicalAnalysis::Data
 describe TechnicalAnalysis::Setup do
   let(:candle_array) { [Candle.new(date: '2012-04-01'), Candle.new(date: '2012-04-02'), Candle.new(date: '2012-04-03')] }
   let(:opts) { Hash.new }
-  subject { TechnicalAnalysis::Setup.new(candle_array, opts) }
+  subject { TechnicalAnalysis::Setup.new(candle_array: candle_array) }
 
   context 'index' do
     it 'should do index' do
@@ -20,28 +20,6 @@ describe TechnicalAnalysis::Setup do
       subject.end_at.should == 2
     end
 
-    context 'passing start and end by opts' do
-      let(:opts) { { start_at: '2012-04-02', end_at: '2012-04-03' } }
-      it 'start at 1' do
-        subject.start_at.should == 1
-      end
-
-      it 'end at 2' do
-        subject.end_at.should == 2
-      end
-    end
-
-    context 'passing start and end by param' do
-      it 'start at param' do
-        subject.start_at(1).should == 1
-        subject.start_at('2012-04-01').should == 0
-      end
-
-      it 'end at param' do
-        subject.end_at(1).should == 1
-        subject.end_at('2012-04-02').should == 1
-      end
-    end
   end
 
   context 'inhited' do

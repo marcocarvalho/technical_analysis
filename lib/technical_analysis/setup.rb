@@ -12,9 +12,9 @@ module TechnicalAnalysis
       @klasses ||= []
     end
 
-    def initialize(candle_arr, opts = {})
+    def initialize(opts = {})
       @options        = opts
-      @candle_array   = candle_arr
+      @candle_array   = opts[:candle_array]
     end
 
     def price_near(price, opts = {})
