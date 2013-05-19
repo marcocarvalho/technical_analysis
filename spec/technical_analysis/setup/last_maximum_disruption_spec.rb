@@ -34,4 +34,16 @@ describe TechnicalAnalysis::LastMaximumDisruption do
       end
     end
   end
+
+  context '#trade?' do
+    before(:each) do
+      subject.should_receive(:candle)
+        .once
+        .with(-1, :high)
+        .and_return(200)
+    end
+
+    it{ subject.trade?(100).should be_false }
+    it{ subject.trade?(300).should be_true }
+  end
 end

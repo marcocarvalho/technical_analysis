@@ -7,23 +7,23 @@ module TechnicalAnalysis
     end
 
     def trade?(price, idx = -1)
-      candle_array[idx].high < price
+      candle(idx, :high) < price
     end
 
     def stop_loss(idx)
-      candle_array[idx].low.round(2)
+      candle(idx, :low).round(2)
     end
 
     def stop_gain(idx)
-      (candle_array[idx].high * 1.07).round(2)
+      (candle(idx, :high) * 1.07).round(2)
     end
 
     def entry_point?(idx)
-      candle_array[idx - 1].high < candle_array[idx].high
+      candle(idx - 1, :high) < candle_array[idx].high
     end
 
     def signal(idx)
-      { candle: candle_array[idx], stop_gain: stop_gain(idx), stop_loss: stop_loss(idx) }
+      { candle: candle(idx), stop_gain: stop_gain(idx), stop_loss: stop_loss(idx) }
     end
 
     def range
