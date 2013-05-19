@@ -26,7 +26,22 @@ Gem::Specification.new do |spec|
 
   #spec.add_dependency 'ffi-talib', "~> 0.1"  # in the future
   spec.add_development_dependency "bundler"
-  spec.add_development_dependency "rspec"
   spec.add_development_dependency "pry-nav"
   spec.add_development_dependency "rake"
+
+  # test stuff
+  spec.add_development_dependency 'rspec', '~> 2.5'
+  spec.add_development_dependency 'fuubar', '~> 1.1.0'
+
+  # run tests automatically
+  spec.add_development_dependency 'guard'
+  spec.add_development_dependency 'guard-rspec'
+  spec.add_development_dependency 'growl'
+
+  # for documentation
+  spec.add_development_dependency 'yard'
+  spec.add_development_dependency 'redcarpet'
+
+  # for code coverage
+  spec.add_development_dependency 'simplecov'
 end
