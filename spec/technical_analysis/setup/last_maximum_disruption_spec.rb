@@ -60,4 +60,21 @@ describe TechnicalAnalysis::LastMaximumDisruption do
       subject.stop_loss(:idx).should == :rounded_by_2
     end
   end
+
+  context '#stop_gain' do
+    before(:each) do
+      subject.should_receive(:candle)
+        .once
+        .with(:idx, :high)
+        .and_return(1.111)
+    end
+
+    it 'Should apply target and round by 2 value of high' do
+      subject.stop_gain(:idx, 5).should == 5.56
+    end
+
+    it 'Should use a default target of 1.07' do
+      subject.stop_gain(:idx).should == 1.19
+    end
+  end
 end

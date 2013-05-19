@@ -14,8 +14,8 @@ module TechnicalAnalysis
       candle(idx, :low).round(2)
     end
 
-    def stop_gain(idx)
-      (candle(idx, :high) * 1.07).round(2)
+    def stop_gain(idx, target = 1.07)
+      (candle(idx, :high) * target).round(2)
     end
 
     def entry_point?(idx)
