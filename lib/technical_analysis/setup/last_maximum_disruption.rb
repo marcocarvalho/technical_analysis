@@ -19,7 +19,7 @@ module TechnicalAnalysis
     end
 
     def entry_point?(idx)
-      candle(idx - 1, :high) < candle_array[idx].high
+      candle(idx - 1, :high) < candle(idx, :high)
     end
 
     def signal(idx)

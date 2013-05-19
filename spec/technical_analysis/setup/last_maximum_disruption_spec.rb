@@ -77,4 +77,33 @@ describe TechnicalAnalysis::LastMaximumDisruption do
       subject.stop_gain(:idx).should == 1.19
     end
   end
+
+  context '#entry_point?' do
+    def try_entry(opts = {})
+      subject.should_receive(:candle)
+        .once
+        .with(-1, :high)
+        .and_return(opts[:yesterday_high])
+      subject.should_receive(:candle)
+        .once
+        .with(0, :high)
+        .and_return(opts[:today_high])
+
+      subject.entry_point?(0)
+    end
+
+    it 'Should return true if todays high is bigger than yesterdays' do
+      try_entry(yesterday_high: 100, today_high: 200).should be_true
+    end
+
+    it 'Should return false if yesterdays high is bigger than todays' do
+      try_entry(yesterday_high: 200, today_high: 100).should be_false
+    end
+
+    it 'Should return false if today and yesterday high are equal' do
+      try_entry(yesterday_high: 100, today_high: 100).should be_false
+    end
+
+  end
+
 end
