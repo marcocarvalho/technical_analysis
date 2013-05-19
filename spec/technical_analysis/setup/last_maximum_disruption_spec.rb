@@ -115,4 +115,17 @@ describe TechnicalAnalysis::LastMaximumDisruption do
     end
   end
 
+  context '#range' do
+    it 'Should return empty array unless minimal ticks' do
+      subject.should_receive(:mininal_ticks?).once.and_return(false)
+      subject.range.should == []
+    end
+
+    it 'Should return the range if have minimal ticks' do
+      subject.should_receive(:mininal_ticks?).once.and_return(true)
+      subject.should_receive(:candle_array).once.and_return(Array.new(10))
+      subject.range.should == (1..9)
+    end
+  end
+
 end

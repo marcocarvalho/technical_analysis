@@ -27,11 +27,8 @@ module TechnicalAnalysis
     end
 
     def range
-      if minimal_ticks?
-        (1..(candle_array.size - 1))
-      else
-        []
-      end
+      return [] unless mininal_ticks?
+      (1..(candle_array.size - 1))
     end
 
     def run_setup
