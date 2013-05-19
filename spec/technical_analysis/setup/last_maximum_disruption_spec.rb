@@ -46,4 +46,18 @@ describe TechnicalAnalysis::LastMaximumDisruption do
     it{ subject.trade?(100).should be_false }
     it{ subject.trade?(300).should be_true }
   end
+
+  context '#stop_loss' do
+    it 'Should get the rounded by 2 value of low' do
+      low = double(:low)
+      low.should_receive(:round).once.with(2).and_return(:rounded_by_2)
+
+      subject.should_receive(:candle)
+        .once
+        .with(:idx, :low)
+        .and_return(low)
+
+      subject.stop_loss(:idx).should == :rounded_by_2
+    end
+  end
 end
