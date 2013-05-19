@@ -10,28 +10,28 @@ describe TechnicalAnalysis::LastMaximumDisruption do
   end
 
   context '#candle' do
-    context 'Should return nil when index does not match item' do
-      subject { TechnicalAnalysis::LastMaximumDisruption.new [:one_item_only] }
-
-      it { subject.candle(-1).should be_nil }
-      it { subject.candle(1).should be_nil  }
+    subject { TechnicalAnalysis::LastMaximumDisruption.new candle_array: [:one_item_only] }
+    it 'Should return nil when index does not match item' do
+      subject.candle(1).should be_nil
     end
 
     it 'Should return the item if no attribute name given' do
-      subject { TechnicalAnalysis::LastMaximumDisruption.new [:one_item_only] }
-
       subject.candle(0).should == :one_item_only
     end
 
-    it 'Should return the attribute value for the given attribute name' do
-      candle = double(:candle)
-      candle.should_receive(:my_fancy_attribute)
-        .once
-        .and_return(:value)
+    context '' do
+      let(:candle) do
+        cdl = double(:candle)
+        cdl.should_receive(:my_fancy_attribute)
+          .once
+          .and_return(:value)
+        cdl
+      end
+      subject { TechnicalAnalysis::LastMaximumDisruption.new candle_array: [candle] }
 
-      subject { TechnicalAnalysis::LastMaximumDisruption.new [candle] }
-
-      subject.candle(0, :my_fancy_attribute).should == :value
+      it 'Should return the attribute value for the given attribute name' do
+        subject.candle(0, :my_fancy_attribute).should == :value
+      end
     end
   end
 end
