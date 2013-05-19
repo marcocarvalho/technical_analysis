@@ -106,4 +106,13 @@ describe TechnicalAnalysis::LastMaximumDisruption do
 
   end
 
+  context '#signal' do
+    it 'Should mount signal' do
+      subject.should_receive(:candle).with(:idx).and_return(:actual_candle)
+      subject.should_receive(:stop_loss).with(:idx).and_return(:stop_loss)
+      subject.should_receive(:stop_gain).with(:idx).and_return(:stop_gain)
+      subject.signal(:idx).should == { candle: :actual_candle, stop_gain: :stop_gain, stop_loss: :stop_loss }
+    end
+  end
+
 end
