@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'Portfolio and trades' do
   let(:cash) { 5000 }
 
-  let(:portfolio) { Portfolio.where(cash: cash, risk_management_type: 'Classic').first_or_create }
+  let(:portfolio) { Portfolio.create(cash: cash, risk_management_type: 'Classic') }
 
   let(:symbol) { 'TST' }
 
@@ -15,12 +15,12 @@ describe 'Portfolio and trades' do
   let(:subtotal) { nil }
   let(:total) { nil }
 
-  subject { portfolio.trades.where(:symbol => symbol, :date => date, :quantity => quantity, :type => type, :price => price, :brokerage => brokerage, :total => total, :subtotal => subtotal).first_or_create }
+  subject { portfolio.trades.create(:symbol => symbol, :date => date, :quantity => quantity, :type => type, :price => price, :brokerage => brokerage, :total => total, :subtotal => subtotal) }
 
   context 'no subtotal and total given' do
     it 'should calculate subtotal and total if not given' do
       subject.subtotal.should == quantity * price
-      subject.total.should == quantity * price + brokerage
+      subject.total.to_f.should == quantity * price - brokerage
     end
   end
 
@@ -35,7 +35,7 @@ describe 'Portfolio and trades' do
 
   context 'portfolio cash up and down' do
     it 'should substract cash in portfolio when buy' do
-      subject.portfolio.cash.should == cash - (quantity * price) - brokerage
+      subject.portfolio.cash.should == cash - (quantity * price) + brokerage
     end
   end
 
