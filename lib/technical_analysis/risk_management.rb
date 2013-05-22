@@ -4,10 +4,12 @@ module TechnicalAnalysis
     class Abstract
       attr_accessor :portfolio, :options
 
-      def initialize(portf, opts = {})
-        raise ArgumentError.new('Portfolio needed') unless portf.is_a?(Portfolio)
-        @portfolio = portf
+      def initialize(opts = {})
         @options   = opts
+      end
+
+      def trade?(cash, price_in, opts = {})
+        raise NotImplementedError.new('implement this!')
       end
 
       def quantity_or_value?

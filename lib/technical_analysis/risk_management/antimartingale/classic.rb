@@ -3,14 +3,17 @@ module TechnicalAnalysis
     class Classic < Abstract
       # Max Risk share
 
-      attr_accessor :stop_gain, :stop_loss, :max_loss, :trade_at, :type
+      attr_accessor :stop_gain, :stop_loss, :max_loss, :trade_at, :type, :cash
 
-      def initialize(*args)
-        super(*args)
-        @stop_loss = options[:stop_loss]
-        @max_loss  = options[:max_loss] || 0.08
-        @trade_at  = options[:trade_at]
-        @type      = options[:type] || :buy
+      def initialize(opts = {})
+        super
+        parse_opts(opts)
+      end
+
+      def parse_opts(opts)
+        @stop_loss = opts[:stop_loss] || @stop_loss
+        @max_loss  = opts[:max_loss]  || @max_loss  || 0.08
+        @type      = opts[:type]      || @type      || :buy
       end
 
       def self.setup
@@ -22,13 +25,13 @@ module TechnicalAnalysis
       end
 
       def max_risk
-        (portfolio.cash.to_f * max_loss)
+        (cash.to_f * max_loss)
       end
 
       def quantity
         risk = max_risk / (trade_at - stop_loss)
-        if risk * trade_at > portfolio.cash.to_f
-          (portfolio.cash.to_f / trade_at.to_f).to_i
+        if risk * trade_at > cash.to_f
+          (cash.to_f / trade_at.to_f).to_i
         else
           risk.to_i
         end
@@ -38,7 +41,13 @@ module TechnicalAnalysis
         trade_at * quantity
       end
 
-      def trade?
+      def trade?(cash, price_in, opts = {})
+        return false if not price_in.kind_of?(Numeric) or
+                        not cash.kind_of?(Numeric) or
+                        not opts[:stop_loss].kind_of?(Numeric)
+        @trade_at  = price_in
+        @cash      = cash
+        parse_opts(opts)
         quantity > 0
       end
     end
