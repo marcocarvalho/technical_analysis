@@ -25,7 +25,7 @@ describe TechnicalAnalysis::RiskManagement::Classic do
   it 'should return false if no price_in or cash or stop loss' do
     subject.trade?(nil, 10).should be_false
     subject.trade?(10, nil).should be_false
-    subject.trade?(10,10, stop_loss: nil)
+    subject.trade?(10,10, stop_loss: nil).should be_false
   end
 
   context 'small max loss to a grather cash' do
