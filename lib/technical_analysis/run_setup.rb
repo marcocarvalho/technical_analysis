@@ -1,7 +1,9 @@
 #
 module TechnicalAnalysis
   class RunSetup
-    attr_accessor :cash, :symbol, :candle_array, :setup, :portfolio, :entry_point, :risk_management, :start_date, :finish_date
+    attr_accessor :cash, :symbol, :setup, :portfolio, :entry_point, :risk_management, :start_date, :finish_date
+
+    attr_writer :candle_array
 
     def risk_management_list
       TechnicalAnalysis::RiskManagement.list
@@ -66,8 +68,13 @@ module TechnicalAnalysis
       @portfolio = Portfolio.create(cash: cash, risk_management_type: risk_management.class.to_s, options: risk_management.options)
     end
 
-    def find_candle_array
-      @candle_array = HistoricalQuote.where(where_clause(symbol))
+    def candle_array(symb = nil)
+      if not symb.nil? and symb != symbol
+        self.symbol = symb
+        @candle_array = HistoricalQuote.where(where_clause(symbol))
+      else
+        @candle_array
+      end
     end
 
     def run(cash, list, opts = {})
@@ -76,9 +83,8 @@ module TechnicalAnalysis
       self.start_date  = opts[:start]
       self.finish_date = opts[:finish]
 
-      list.each do |symbol|
-        self.symbol = symbol
-        find_candle_array
+      list.each do |symb|
+        candle_array(symb)
         setup_list.each do |setup_class|
           self.setup = setup_class.new(candle_array: candle_array)
           entry_points = setup.run_setup
