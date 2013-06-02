@@ -111,7 +111,8 @@ describe TechnicalAnalysis::LastMaximumDisruption do
       subject.should_receive(:candle).with(:idx).and_return(:actual_candle)
       subject.should_receive(:stop_loss).with(:idx).and_return(:stop_loss)
       subject.should_receive(:stop_gain).with(:idx).and_return(:stop_gain)
-      subject.signal(:idx).should == { candle: :actual_candle, stop_gain: :stop_gain, stop_loss: :stop_loss }
+      subject.should_receive(:price_in).with(:idx).and_return(:price_in)
+      subject.signal(:idx).should == { idx: :idx, price_in: :price_in, candle: :actual_candle, stop_gain: :stop_gain, stop_loss: :stop_loss }
     end
   end
 

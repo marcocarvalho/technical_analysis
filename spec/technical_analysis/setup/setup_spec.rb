@@ -26,7 +26,7 @@ describe TechnicalAnalysis::Setup do
     Kernel.send(:remove_const, :D) if Kernel.const_defined?(:D)
     class D < TechnicalAnalysis::Setup; end
     it 'should list inhited classes' do
-      TechnicalAnalysis::Setup.all.include?(D).should be_true
+      TechnicalAnalysis::Setup.list.include?(D).should be_true
     end
   end
 end

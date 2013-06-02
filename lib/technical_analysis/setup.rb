@@ -8,7 +8,7 @@ module TechnicalAnalysis
       @klasses << klass
     end
 
-    def self.all
+    def self.list
       @klasses ||= []
     end
 

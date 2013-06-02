@@ -11,6 +11,7 @@ module TechnicalAnalysis
   autoload :Data, 'technical_analysis/data'
   autoload :Analysis, 'technical_analysis/analysis'
   autoload :RiskManagement, 'technical_analysis/risk_management'
+  autoload :RunSetup, 'technical_analysis/run_setup'
 end
 
 require 'technical_analysis/setup'
@@ -25,6 +26,8 @@ autoload :Quote, 'technical_analysis/models/quote'
 autoload :HistoricalQuote, 'technical_analysis/models/historical_quote'
 autoload :ImportBovespaCompanyInfo, 'technical_analysis/data/import_bovespa_company_info'
 autoload :Trade, 'technical_analysis/models/trade'
+autoload :Buy, 'technical_analysis/models/buy'
+autoload :Sell, 'technical_analysis/models/sell'
 
 
 class Array

@@ -56,6 +56,10 @@ module TechnicalAnalysis
       candle(idx - 1, :high) < candle(idx, :high)
     end
 
+    def price_in(idx)
+      price_between(cande(idx - 1, :high), candle(idx, :high))
+    end
+
     # Generates a signal
     #
     # @param [Fixnum] idx candle position
@@ -63,7 +67,7 @@ module TechnicalAnalysis
     #
     # @todo Explain better what is a signal and its use
     def signal(idx)
-      { candle: candle(idx), stop_gain: stop_gain(idx), stop_loss: stop_loss(idx) }
+      { idx: idx, price_in: price_in(idx), candle: candle(idx), stop_gain: stop_gain(idx), stop_loss: stop_loss(idx) }
     end
 
     # Computes a processing range

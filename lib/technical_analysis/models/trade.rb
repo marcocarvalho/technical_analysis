@@ -2,6 +2,9 @@ class Trade < ActiveRecord::Base
   attr_accessible :symbol, :date, :quantity, :type, :price, :brokerage, :subtotal, :total
   belongs_to :portfolio
 
+  validates :symbol, :date, :quantity, :price, :type, presence: true
+  validates :quantity, :price, numericality: true
+
   after_create do
     if type.to_sym == :buy
       portfolio.cash = portfolio.cash.to_f - total.to_f
@@ -19,5 +22,9 @@ class Trade < ActiveRecord::Base
     if total.nil? or total == 0
       self.total  = quantity * price - brokerage
     end
+  end
+
+  def self.inheritance_column
+    :type_class
   end
 end

@@ -32,10 +32,18 @@ module TechnicalAnalysis
         raise NotImplementedError.new('implement this!')
       end
 
-      def self.extended(klass)
+      def self.inherited(klass)
         @classes ||= []
         @classes << klass
       end
+
+      def self.list
+        @classes
+      end
+    end
+
+    def self.list
+      Abstract.list
     end
   end
 end

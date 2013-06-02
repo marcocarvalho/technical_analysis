@@ -22,6 +22,13 @@ describe 'Portfolio and trades' do
       subject.subtotal.should == quantity * price
       subject.total.to_f.should == quantity * price - brokerage
     end
+    context 'sell type' do
+      let(:type) { :sell }
+      it 'aa' do
+        subject.subtotal.should == quantity * price
+        subject.total.to_f.should == quantity * price - brokerage
+      end
+    end
   end
 
   context 'givin subtotal and total' do
