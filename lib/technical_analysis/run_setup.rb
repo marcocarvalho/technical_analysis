@@ -90,8 +90,10 @@ module TechnicalAnalysis
               if trade?
                 portfolio.buy(entry_point_to_trade)
                 register_stops
+                # TODO: process_stops
               end
             end
+            # TODO: finish_positions
           end
         end
       end
