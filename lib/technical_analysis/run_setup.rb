@@ -93,11 +93,10 @@ module TechnicalAnalysis
             create_portfolio
             entry_points.each do |entry_point|
               self.entry_point = entry_point
-              if trade?
-                portfolio.buy(entry_point_to_trade)
-                register_stops
-                # TODO: process_stops
-              end
+              next unless trade?
+              portfolio.buy(entry_point_to_trade)
+              register_stops
+              # TODO: process_stops
             end
             # TODO: finish_positions
           end
