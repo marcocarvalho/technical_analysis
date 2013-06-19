@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe HistoricalQuoteProxy do
-  let(:start) { Candle.new }
-  let(:finish) { Candle}
   subject { HistoricalQuoteProxy }
 
   it 'should be a singleton' do
@@ -30,7 +28,20 @@ describe HistoricalQuoteProxy do
     subject.instance.finish.should  == Time.new(2012, 10, 3)
   end
 
+  context '#load_if_necessary' do
+    it 'should load all if cache empty' do
+      subject.instance.should_receive(:start).and_return(start_date)
+      subject.instance.should_receive(:finish).and_return(finish_date)
+      subject.instance.should_receive(:load_quote).with(start_date, finish_date, '=').and_return(cache)
+      subject.instance.load_if_necessary
+      subject.instance.cache.should == cache
+    end
+  end
+
   context 'info in cache' do
+    let(:start_date) { Time.new(2012, 10, 1) }
+    let(:finish_date) { Time.new(2012, 10, 2) }
+    let(:symbol) { 'symbol' }
     subject { HistoricalQuoteProxy.instance }
     context 'no cache loaded yet' do
       it '#symbol_in_cache' do

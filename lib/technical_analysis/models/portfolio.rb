@@ -1,6 +1,6 @@
 class Portfolio < ActiveRecord::Base
   attr_accessible :cash, :risk_management_type, :symbol, :initial_cash, :name
-  belong_to :company
+  belongs_to :company
   has_many :trades, :dependent => :destroy
 
   def sell(opts = {})

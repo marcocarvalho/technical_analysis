@@ -47,16 +47,19 @@ class HistoricalQuoteProxy
       self.cache  = load_quote(start, finish, '=')
       self.start  = start_in_cache
       self.finish = finish_in_cache
+      return self.cache
     end
 
     if start_in_cache < start
       ret        = load_quote(start_in_cache, start)
       self.cache = ret + cache
+      return self.cache
     end
 
     if finish_in_cache > finish
       ret        = load_quote(finish, finish_in_cache)
       self.cache = cache + ret
+      return self.cache
     end
   end
 
