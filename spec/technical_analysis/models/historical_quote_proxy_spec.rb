@@ -1,8 +1,11 @@
 require 'spec_helper'
 
 describe HistoricalQuoteProxy do
-  let(:start) { Candle.new }
-  let(:finish) { Candle}
+  let(:start_date) { Time.new(2012, 10, 1) }
+  let(:finish_date) { Time.new(2012, 10, 2) }
+  let(:symbol) { 'symbol' }
+  let(:cache) { [HistoricalQuote.new(symbol: symbol, date: start_date),
+                 HistoricalQuote.new(symbol: symbol, date: finish_date)] }
   subject { HistoricalQuoteProxy }
 
   it 'should be a singleton' do
@@ -28,6 +31,31 @@ describe HistoricalQuoteProxy do
     subject.instance.symbol.should  == 'SYM'
     subject.instance.start.should   == Time.new(2012, 10, 2)
     subject.instance.finish.should  == Time.new(2012, 10, 3)
+  end
+
+  context '#load_if_necessary' do
+    subject { HistoricalQuoteProxy.instance }
+
+    it 'should do the first load' do
+      subject.should_receive(:refresh_cache?).and_return(true)
+      subject.should_receive(:refresh_cache).and_return(:refreshed)
+      subject.load_if_necessary.should == :refreshed
+    end
+
+    it 'should append before if start date change' do
+      subject.should_receive(:refresh_cache?).and_return(false)
+      subject.should_receive(:append_cache_before?).and_return(true)
+      subject.should_receive(:append_cache).with(:before).and_return(:appended_before)
+      subject.load_if_necessary.should == :appended_before
+    end
+
+    it 'should append after if finish date change' do
+      subject.should_receive(:refresh_cache?).and_return(false)
+      subject.should_receive(:append_cache_before?).and_return(false)
+      subject.should_receive(:append_cache_after?).and_return(true)
+      subject.should_receive(:append_cache).with(:after).and_return(:appended_after)
+      subject.load_if_necessary.should == :appended_after
+    end
   end
 
   context 'info in cache' do
@@ -60,12 +88,6 @@ describe HistoricalQuoteProxy do
         end
 
         context 'with cache' do
-          let(:start_date) { Time.new(2012, 10, 1) }
-          let(:finish_date) { Time.new(2012, 10, 2) }
-          let(:symbol) { 'symbol' }
-          let(:cache) { [HistoricalQuote.new(symbol: symbol, date: start_date),
-                         HistoricalQuote.new(symbol: symbol, date: finish_date)] }
-
           before(:each) do
             subject.should_receive(:cache).any_number_of_times.and_return(cache)
           end

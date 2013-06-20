@@ -39,24 +39,42 @@ class HistoricalQuoteProxy
   end
 
   def load_quote(s, f, like = "")
-    HistoricalQuote.where("symbol = ? and date >#{like} ? and date <#{like} ?", symbol, s, f).order(:date)
+    like1, like2 = like.split('')
+    HistoricalQuote.where("symbol = ? and date >#{like1} ? and date <#{like2} ?", symbol, s, f).order(:date)
+  end
+
+  def refresh_cache?
+    cache.nil? or symbol_in_cache != symbol
+  end
+
+  def append_cache_before?
+    start_in_cache > start
+  end
+
+  def append_cache_after?
+    finish_in_cache < finish
+  end
+
+  def refresh_cache
+    self.cache  = load_quote(start, finish, '==')
+    self.start  = start_in_cache
+    self.finish = finish_in_cache
+    return :refreshed
+  end
+
+  def append_cache(where)
+    ret        = load_quote(start_in_cache, start, '= ')
+    self.cache = where == :before ? ret + cache : cache + ret
+    return "appended_#{where}".to_sym
   end
 
   def load_if_necessary
-    if cache.nil? or symbol_in_cache != symbol
-      self.cache  = load_quote(start, finish, '=')
-      self.start  = start_in_cache
-      self.finish = finish_in_cache
-    end
-
-    if start_in_cache < start
-      ret        = load_quote(start_in_cache, start)
-      self.cache = ret + cache
-    end
-
-    if finish_in_cache > finish
-      ret        = load_quote(finish, finish_in_cache)
-      self.cache = cache + ret
+    if refresh_cache?
+      refresh_cache
+    elsif append_cache_before?
+      append_cache(:before)
+    elsif append_cache_after?
+      append_cache(:after)
     end
   end
 
