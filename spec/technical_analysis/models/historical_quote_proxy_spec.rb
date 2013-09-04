@@ -14,6 +14,47 @@ describe HistoricalQuoteProxy do
 
   context 'Simple methods' do
     subject { HistoricalQuoteProxy.instance }
+
+    it '#load_quote' do
+      obj = mock(Object)
+      obj.should_receive(:order).with(:date).once.and_return(:datum)
+      subject.symbol = symbol
+      HistoricalQuote.should_receive(:where).with('symbol = ? and date > ? and date < ?', symbol, start_date, finish_date).and_return(obj)
+      subject.load_quote(start_date, finish_date).should == :datum
+    end
+
+    it '#load_quote with like' do
+      obj = mock(Object)
+      obj.should_receive(:order).with(:date).once.and_return(:datum)
+      subject.symbol = symbol
+      HistoricalQuote.should_receive(:where).with('symbol = ? and date >= ? and date <* ?', symbol, start_date, finish_date).and_return(obj)
+      subject.load_quote(start_date, finish_date, '=*').should == :datum
+    end
+
+    it '#append_cache before' do
+      subject.should_receive(:load_quote).with(any_args()).and_return([1])
+      subject.cache = [2]
+      subject.append_cache(:before).should == :appended_before
+      subject.cache.should == [1,2]
+    end
+
+    it '#append_cache after' do
+      subject.should_receive(:load_quote).with(any_args()).and_return([1])
+      subject.cache = [2]
+      subject.append_cache(:after).should == :appended_after
+      subject.cache.should == [2,1]
+    end
+
+    it '#refresh_cache' do
+      subject.start  = start_date
+      subject.finish = finish_date
+      subject.should_receive(:cache).any_number_of_times.and_return(cache)
+      subject.should_receive(:load_quote).with(start_date, finish_date, '==').and_return(:cache)
+      subject.refresh_cache.should   == :refreshed
+      subject.start.should           == start_date
+      subject.finish.should          == finish_date
+    end
+
     it '#append_cache_before?' do
       subject.should_receive(:start_in_cache).and_return(Time.new(2012), Time.new(2011))
       subject.should_receive(:start).and_return(Time.new(2011), Time.new(2012))
@@ -39,18 +80,6 @@ describe HistoricalQuoteProxy do
       subject.refresh_cache?.should be_false
     end
 
-    # it '#refresh_cache' do
-    #   subject.should_receive(:start).and_return(:start)
-    #   subject.should_receive(:finish).and_return(:finish)
-    #   subject.should_receive(:start_in_cache).and_return(:start_in_cache)
-    #   subject.should_receive(:finish_in_cache).and_return(:finish_in_cache)
-    #   subject.should_receive(:load_cache).with(:start, :finish, '==').and_return(:array_of_quotes)
-    #   subject.should_receive(:start=).with(:start_in_cache)
-    #   subject.should_receive(:finish=).with(:finish_in_cache)
-    #   subject.refresh_cache.should == :refreshed
-    #   subject.cache.should == :cache
-    # end
-
   end
 
   it '#self.where' do
@@ -68,8 +97,8 @@ describe HistoricalQuoteProxy do
   end
 
   it '#parse_hash' do
-    subject.instance.parse_hash({ symbol: 'SYM', start: '2012-10-02', finish: Time.new(2012, 10, 3) })
-    subject.instance.symbol.should  == 'SYM'
+    subject.instance.parse_hash({ symbol: symbol, start: '2012-10-02', finish: Time.new(2012, 10, 3) })
+    subject.instance.symbol.should  == symbol
     subject.instance.start.should   == Time.new(2012, 10, 2)
     subject.instance.finish.should  == Time.new(2012, 10, 3)
   end
@@ -148,8 +177,8 @@ describe HistoricalQuoteProxy do
       end
 
       it '#symbol_in_cache' do
-        subject.should_receive(:try_in_cache).with(:first, :symbol, '').and_return('SYM')
-        subject.symbol_in_cache.should == 'SYM'
+        subject.should_receive(:try_in_cache).with(:first, :symbol, '').and_return(symbol)
+        subject.symbol_in_cache.should == symbol
       end
 
       it '#start_in_cache' do
