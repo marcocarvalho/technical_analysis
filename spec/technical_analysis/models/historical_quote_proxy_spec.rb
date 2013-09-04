@@ -12,6 +12,47 @@ describe HistoricalQuoteProxy do
     subject.ancestors.include?(:Singleton)
   end
 
+  context 'Simple methods' do
+    subject { HistoricalQuoteProxy.instance }
+    it '#append_cache_before?' do
+      subject.should_receive(:start_in_cache).and_return(Time.new(2012), Time.new(2011))
+      subject.should_receive(:start).and_return(Time.new(2011), Time.new(2012))
+      subject.append_cache_before?.should be_true
+      subject.append_cache_before?.should be_false
+    end
+
+    it '#append_cache_after?' do
+      subject.should_receive(:finish_in_cache).and_return(Time.new(2011), Time.new(2012))
+      subject.should_receive(:finish).and_return(Time.new(2012), Time.new(2011))
+      subject.append_cache_after?.should be_true
+      subject.append_cache_after?.should be_false
+    end
+
+    it '#refresh_cache?' do
+      subject.refresh_cache?.should be_true
+
+      subject.should_receive(:cache).twice.and_return(:somethig)
+      subject.should_receive(:symbol).twice.and_return(:other_symbol)
+      subject.should_receive(:symbol_in_cache).and_return(:symbol, :other_symbol)
+
+      subject.refresh_cache?.should be_true
+      subject.refresh_cache?.should be_false
+    end
+
+    # it '#refresh_cache' do
+    #   subject.should_receive(:start).and_return(:start)
+    #   subject.should_receive(:finish).and_return(:finish)
+    #   subject.should_receive(:start_in_cache).and_return(:start_in_cache)
+    #   subject.should_receive(:finish_in_cache).and_return(:finish_in_cache)
+    #   subject.should_receive(:load_cache).with(:start, :finish, '==').and_return(:array_of_quotes)
+    #   subject.should_receive(:start=).with(:start_in_cache)
+    #   subject.should_receive(:finish=).with(:finish_in_cache)
+    #   subject.refresh_cache.should == :refreshed
+    #   subject.cache.should == :cache
+    # end
+
+  end
+
   it '#self.where' do
     mock = stub(:instance)
     mock.should_receive(:where).with(:opts).and_return(:value)
