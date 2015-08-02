@@ -6,7 +6,8 @@ describe '' do
   subject do 
     B.new
   end
+
   it 'calculate stop loss' do
-    subject.stop_loss(10, 5).should == (10 - (( 10 - 5) * 1.33))
+    expect(subject.stop_loss(10, 5)).to eq (10 - (( 10 - 5) * 1.33))
   end
 end

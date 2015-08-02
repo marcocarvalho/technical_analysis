@@ -9,122 +9,122 @@ describe HistoricalQuoteProxy do
   subject { HistoricalQuoteProxy }
 
   it 'should be a singleton' do
-    subject.ancestors.include?(:Singleton)
+    expect(subject.ancestors).to include(Singleton)
   end
 
   context 'Simple methods' do
     subject { HistoricalQuoteProxy.instance }
 
     it '#load_quote' do
-      obj = mock(Object)
-      obj.should_receive(:order).with(:date).once.and_return(:datum)
+      obj = double(Object)
+      allow(obj).to receive(:order).with(:date).and_return(:datum)
       subject.symbol = symbol
-      HistoricalQuote.should_receive(:where).with('symbol = ? and date > ? and date < ?', symbol, start_date, finish_date).and_return(obj)
-      subject.load_quote(start_date, finish_date).should == :datum
+      allow(HistoricalQuote).to receive(:where).with('symbol = ? and date > ? and date < ?', symbol, start_date, finish_date).and_return(obj)
+      expect(subject.load_quote(start_date, finish_date)).to eq :datum
     end
 
     it '#load_quote with like' do
-      obj = mock(Object)
-      obj.should_receive(:order).with(:date).once.and_return(:datum)
+      obj = double(Object)
+      allow(obj).to receive(:order).with(:date).and_return(:datum)
       subject.symbol = symbol
-      HistoricalQuote.should_receive(:where).with('symbol = ? and date >= ? and date <* ?', symbol, start_date, finish_date).and_return(obj)
-      subject.load_quote(start_date, finish_date, '=*').should == :datum
+      allow(HistoricalQuote).to receive(:where).with('symbol = ? and date >= ? and date <* ?', symbol, start_date, finish_date).and_return(obj)
+      expect(subject.load_quote(start_date, finish_date, '=*')).to eq :datum
     end
 
     it '#append_cache before' do
-      subject.should_receive(:load_quote).with(any_args()).and_return([1])
+      allow(subject).to receive(:load_quote).with(any_args()).and_return([1])
       subject.cache = [2]
-      subject.append_cache(:before).should == :appended_before
-      subject.cache.should == [1,2]
+      expect(subject.append_cache(:before)).to eq :appended_before
+      expect(subject.cache).to eq [1,2]
     end
 
     it '#append_cache after' do
-      subject.should_receive(:load_quote).with(any_args()).and_return([1])
+      allow(subject).to receive(:load_quote).with(any_args()).and_return([1])
       subject.cache = [2]
-      subject.append_cache(:after).should == :appended_after
-      subject.cache.should == [2,1]
+      expect(subject.append_cache(:after)).to eq :appended_after
+      expect(subject.cache).to eq [2,1]
     end
 
     it '#refresh_cache' do
       subject.start  = start_date
       subject.finish = finish_date
-      subject.should_receive(:cache).any_number_of_times.and_return(cache)
-      subject.should_receive(:load_quote).with(start_date, finish_date, '==').and_return(:cache)
-      subject.refresh_cache.should   == :refreshed
-      subject.start.should           == start_date
-      subject.finish.should          == finish_date
+      allow(subject).to receive(:cache).and_return(cache)
+      allow(subject).to receive(:load_quote).with(start_date, finish_date, '==').and_return(:cache)
+      expect(subject.refresh_cache).to eq :refreshed
+      expect(subject.start).to         eq start_date
+      expect(subject.finish).to        eq finish_date
     end
 
     it '#append_cache_before?' do
-      subject.should_receive(:start_in_cache).and_return(Time.new(2012), Time.new(2011))
-      subject.should_receive(:start).and_return(Time.new(2011), Time.new(2012))
-      subject.append_cache_before?.should be_true
-      subject.append_cache_before?.should be_false
+      allow(subject).to receive(:start_in_cache).and_return(Time.new(2012), Time.new(2011))
+      allow(subject).to receive(:start).and_return(Time.new(2011), Time.new(2012))
+      expect(subject.append_cache_before?).to be(true)
+      expect(subject.append_cache_before?).to be(false)
     end
 
     it '#append_cache_after?' do
-      subject.should_receive(:finish_in_cache).and_return(Time.new(2011), Time.new(2012))
-      subject.should_receive(:finish).and_return(Time.new(2012), Time.new(2011))
-      subject.append_cache_after?.should be_true
-      subject.append_cache_after?.should be_false
+      allow(subject).to receive(:finish_in_cache).and_return(Time.new(2011), Time.new(2012))
+      allow(subject).to receive(:finish).and_return(Time.new(2012), Time.new(2011))
+      expect(subject.append_cache_after?).to be(true)
+      expect(subject.append_cache_after?).to be(false)
     end
 
     it '#refresh_cache?' do
-      subject.refresh_cache?.should be_true
+      expect(subject.refresh_cache?).to be(true)
 
-      subject.should_receive(:cache).twice.and_return(:somethig)
-      subject.should_receive(:symbol).twice.and_return(:other_symbol)
-      subject.should_receive(:symbol_in_cache).and_return(:symbol, :other_symbol)
+      allow(subject).to receive(:cache).twice.and_return(:somethig)
+      allow(subject).to receive(:symbol).twice.and_return(:other_symbol)
+      allow(subject).to receive(:symbol_in_cache).and_return(:symbol, :other_symbol)
 
-      subject.refresh_cache?.should be_true
-      subject.refresh_cache?.should be_false
+      expect(subject.refresh_cache?).to be(true)
+      expect(subject.refresh_cache?).to be(false)
     end
 
   end
 
   it '#self.where' do
-    mock = stub(:instance)
-    mock.should_receive(:where).with(:opts).and_return(:value)
-    subject.should_receive(:instance).and_return(mock)
-    subject.where(:opts).should == :value
+    mock = double(:instance)
+    expect(mock).to receive(:where).with(:opts).and_return(:value)
+    allow(subject).to receive(:instance).and_return(mock)
+    expect(subject.where(:opts)).to eq :value
   end
 
   it '#where' do
-    subject.instance.should_receive(:parse_hash).with(:opts)
-    subject.instance.should_receive(:load_if_necessary)
-    subject.instance.should_receive(:cache).and_return(:array)
-    subject.instance.where(:opts).should == :array
+    expect(subject.instance).to receive(:parse_hash).with(:opts)
+    expect(subject.instance).to receive(:load_if_necessary)
+    expect(subject.instance).to receive(:cache).and_return(:array)
+    expect(subject.instance.where(:opts)).to eq :array
   end
 
   it '#parse_hash' do
     subject.instance.parse_hash({ symbol: symbol, start: '2012-10-02', finish: Time.new(2012, 10, 3) })
-    subject.instance.symbol.should  == symbol
-    subject.instance.start.should   == Time.new(2012, 10, 2)
-    subject.instance.finish.should  == Time.new(2012, 10, 3)
+    expect(subject.instance.symbol).to  eq symbol
+    expect(subject.instance.start).to   eq Time.new(2012, 10, 2)
+    expect(subject.instance.finish).to  eq Time.new(2012, 10, 3)
   end
 
   context '#load_if_necessary' do
     subject { HistoricalQuoteProxy.instance }
 
     it 'should do the first load' do
-      subject.should_receive(:refresh_cache?).and_return(true)
-      subject.should_receive(:refresh_cache).and_return(:refreshed)
-      subject.load_if_necessary.should == :refreshed
+      allow(subject).to receive(:refresh_cache?).and_return(true)
+      allow(subject).to receive(:refresh_cache).and_return(:refreshed)
+      expect(subject.load_if_necessary).to eq :refreshed
     end
 
     it 'should append before if start date change' do
-      subject.should_receive(:refresh_cache?).and_return(false)
-      subject.should_receive(:append_cache_before?).and_return(true)
-      subject.should_receive(:append_cache).with(:before).and_return(:appended_before)
-      subject.load_if_necessary.should == :appended_before
+      allow(subject).to receive(:refresh_cache?).and_return(false)
+      allow(subject).to receive(:append_cache_before?).and_return(true)
+      allow(subject).to receive(:append_cache).with(:before).and_return(:appended_before)
+      expect(subject.load_if_necessary).to eq :appended_before
     end
 
     it 'should append after if finish date change' do
-      subject.should_receive(:refresh_cache?).and_return(false)
-      subject.should_receive(:append_cache_before?).and_return(false)
-      subject.should_receive(:append_cache_after?).and_return(true)
-      subject.should_receive(:append_cache).with(:after).and_return(:appended_after)
-      subject.load_if_necessary.should == :appended_after
+      allow(subject).to receive(:refresh_cache?).and_return(false)
+      allow(subject).to receive(:append_cache_before?).and_return(false)
+      allow(subject).to receive(:append_cache_after?).and_return(true)
+      allow(subject).to receive(:append_cache).with(:after).and_return(:appended_after)
+      expect(subject.load_if_necessary).to eq :appended_after
     end
   end
 
@@ -132,15 +132,15 @@ describe HistoricalQuoteProxy do
     subject { HistoricalQuoteProxy.instance }
     context 'no cache loaded yet' do
       it '#symbol_in_cache' do
-        subject.symbol_in_cache.should be_empty
+        expect(subject.symbol_in_cache).to be_empty
       end
 
       it '#start_in_cache' do
-        subject.start_in_cache.should be_nil
+        expect(subject.start_in_cache).to be_nil
       end
 
       it '#finish_in_cache' do
-        subject.finish_in_cache.should be_nil
+        expect(subject.finish_in_cache).to be_nil
       end
     end
 
@@ -149,46 +149,46 @@ describe HistoricalQuoteProxy do
 
         context 'empty cache' do
           it 'return default value if no cache' do
-            subject.try_in_cache(:test, :blah).should be_nil
+            expect(subject.try_in_cache(:test, :blah)).to be_nil
           end
 
           it 'should return given value if no cache' do
-            subject.try_in_cache(:test, :blah, :value).should == :value
+            expect(subject.try_in_cache(:test, :blah, :value)).to eq :value
           end
         end
 
         context 'with cache' do
           before(:each) do
-            subject.should_receive(:cache).any_number_of_times.and_return(cache)
+            allow(subject).to receive(:cache).and_return(cache)
           end
 
           it 'should return default value if no method exists' do
-            subject.try_in_cache(:bleh, :symbol, 'default').should == 'default'
+            expect(subject.try_in_cache(:bleh, :symbol, 'default')).to eq 'default'
           end
 
           it 'should return symbol of first element' do
-            subject.try_in_cache(:first, :symbol, 'default').should == symbol
+            expect(subject.try_in_cache(:first, :symbol, 'default')).to eq symbol
           end
 
           it 'should return date of last element' do
-            subject.try_in_cache(:last, :date, 'default').should == finish_date
+            expect(subject.try_in_cache(:last, :date, 'default')).to eq finish_date
           end
         end
       end
 
       it '#symbol_in_cache' do
-        subject.should_receive(:try_in_cache).with(:first, :symbol, '').and_return(symbol)
-        subject.symbol_in_cache.should == symbol
+        allow(subject).to receive(:try_in_cache).with(:first, :symbol, '').and_return(symbol)
+        expect(subject.symbol_in_cache).to eq symbol
       end
 
       it '#start_in_cache' do
-        subject.should_receive(:try_in_cache).with(:first, :date).and_return(:some_date)
-        subject.start_in_cache.should == :some_date
+        allow(subject).to receive(:try_in_cache).with(:first, :date).and_return(:some_date)
+        expect(subject.start_in_cache).to eq :some_date
       end
 
       it '#finish_in_cache' do
-        subject.should_receive(:try_in_cache).with(:last, :date).and_return(:some_other_date)
-        subject.finish_in_cache.should == :some_other_date
+        allow(subject).to receive(:try_in_cache).with(:last, :date).and_return(:some_other_date)
+        expect(subject.finish_in_cache).to eq :some_other_date
       end
     end
   end

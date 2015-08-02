@@ -19,14 +19,14 @@ describe 'Portfolio and trades' do
 
   context 'no subtotal and total given' do
     it 'should calculate subtotal and total if not given' do
-      subject.subtotal.should == quantity * price
-      subject.total.to_f.should == quantity * price - brokerage
+      expect(subject.subtotal).to eq quantity * price
+      expect(subject.total.to_f).to eq quantity * price - brokerage
     end
     context 'sell type' do
       let(:type) { :sell }
       it 'aa' do
-        subject.subtotal.should == quantity * price
-        subject.total.to_f.should == quantity * price - brokerage
+        expect(subject.subtotal).to eq quantity * price
+        expect(subject.total.to_f).to eq quantity * price - brokerage
       end
     end
   end
@@ -35,19 +35,19 @@ describe 'Portfolio and trades' do
     let(:total) { 2000 }
     let(:subtotal) { 1500 }
     it 'should respect values given' do
-      subject.total.to_f.should    == total
-      subject.subtotal.to_f.should == subtotal
+      expect(subject.total.to_f).to eq total
+      expect(subject.subtotal.to_f).to eq subtotal
     end
   end
 
   context 'portfolio cash up and down' do
     it 'should substract cash in portfolio when buy' do
-      subject.portfolio.cash.should == cash - (quantity * price) + brokerage
+      expect(subject.portfolio.cash).to eq cash - (quantity * price) + brokerage
     end
     context 'sell' do
       let(:type) { :sell }
       it 'should add cash in portfolio when sell' do
-        subject.portfolio.cash.should == cash + (quantity * price) - brokerage
+        expect(subject.portfolio.cash).to eq cash + (quantity * price) - brokerage
       end
     end
   end

@@ -9,39 +9,39 @@ describe TechnicalAnalysis::RiskManagement::Classic do
   let(:max_loss) { 0.8 }
 
   it 'implement quantity_or_value?' do
-    subject.quantity_or_value?.should == :quantity
+    expect(subject.quantity_or_value?).to eq :quantity
   end
 
   it 'calc quantity' do
-    subject.trade?(cash, trade_at, stop_loss: stop_loss).should be_true
-    subject.quantity.should == 523 # 523 * 19.1 < 10_000
+    expect(subject.trade?(cash, trade_at, stop_loss: stop_loss)).to be(true)
+    expect(subject.quantity).to eq 523 # 523 * 19.1 < 10_000
   end
 
   it 'should calculate value by quantity' do
-    subject.trade?(cash, trade_at, stop_loss: stop_loss).should be_true
-    subject.value.should == 523 * 19.1
+    expect(subject.trade?(cash, trade_at, stop_loss: stop_loss)).to be(true)
+    expect(subject.value).to eq 523 * 19.1
   end
 
   it 'should return false if no price_in or cash or stop loss' do
-    subject.trade?(nil, 10).should be_false
-    subject.trade?(10, nil).should be_false
-    subject.trade?(10,10, stop_loss: nil).should be_false
+    expect(subject.trade?(nil, 10)).to be(false)
+    expect(subject.trade?(10, nil)).to be(false)
+    expect(subject.trade?(10,10, stop_loss: nil)).to be(false)
   end
 
   context 'small max loss to a grather cash' do
     let(:cash) { 250_000.0 }
     let(:max_loss) { 0.02 }
     it 'should ' do
-      subject.trade?(cash, trade_at, stop_loss: stop_loss, max_loss: max_loss).should be_true
-      subject.quantity.should == 4566
-      subject.value.should == 4566 * 19.1
+      expect(subject.trade?(cash, trade_at, stop_loss: stop_loss, max_loss: max_loss)).to be(true)
+      expect(subject.quantity).to eq 4566
+      expect(subject.value).to eq 4566 * 19.1
     end
   end
 
   context 'no cash left' do
     let(:cash) { 10 }
     it 'should have no trade!' do
-      subject.trade?(cash, trade_at, stop_loss: stop_loss, max_loss: max_loss).should be_false
+      expect(subject.trade?(cash, trade_at, stop_loss: stop_loss, max_loss: max_loss)).to be(false)
     end
   end
 end

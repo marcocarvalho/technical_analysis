@@ -18,33 +18,33 @@ describe TechnicalAnalysis::Data::CandleArray do
 
   context '#Helpers' do
     it '#high' do
-      subject.high.should == sample_data.map { |i| i[:high] }
+      expect(subject.high).to eq sample_data.map { |i| i[:high] }
     end
 
     it '#low' do
-      subject.low.should == sample_data.map { |i| i[:low] }
+      expect(subject.low).to eq sample_data.map { |i| i[:low] }
     end
 
     it '#open' do
-      subject.open.should == sample_data.map { |i| i[:open] }
+      expect(subject.open).to eq sample_data.map { |i| i[:open] }
     end
 
     it '#low' do
-      subject.close.should == sample_data.map { |i| i[:close] }
+      expect(subject.close).to eq sample_data.map { |i| i[:close] }
     end
 
     it '#volume' do
-      subject.volume.should == sample_data.map { |i| i[:volume] }
+      expect(subject.volume).to eq sample_data.map { |i| i[:volume] }
     end
 
     it '#date' do
-      subject.date.should == sample_data.map { |i| i[:date] }
+      expect(subject.date).to eq sample_data.map { |i| i[:date] }
     end
 
     it '#stop_loss with last' do
       high = subject.last.high
       low  = subject.last.low
-      subject.stop_loss.should == ( high - ( ( high - low ) * 1.33 ) ) 
+      expect(subject.stop_loss).to eq ( high - ( ( high - low ) * 1.33 ) ) 
     end
   end
 end

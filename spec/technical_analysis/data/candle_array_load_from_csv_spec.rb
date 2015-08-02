@@ -3,10 +3,10 @@ require 'spec_helper'
 describe TechnicalAnalysis::Data::CandleArray do
   context '#loading Candles from csv' do
     it '#load' do
-      subject.count.should be(0)
+      expect(subject.count).to eq(0)
       subject.load_from_csv(File.join(File.dirname(__FILE__), 'sample.csv'))
-      subject.count.should be(4)
-      subject.period.should be(:day)
+      expect(subject.count).to eq(4)
+      expect(subject.period).to eq(:day)
       tests = [
               { date: Time.parse('2013-03-21'), open: 18.72, high: 18.86, low: 18.49, close: 18.53, volume: 21978600 },
               { date: Time.parse('2013-03-22'), open: 18.55, high: 18.71, low: 18.46, close: 18.63, volume: 16137700 },

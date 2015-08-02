@@ -3,7 +3,6 @@ Bundler.setup
 # require "bundler/gem_tasks"
 require 'active_record'
 require 'sqlite3'
-require 'mysql2'
 require 'yaml'
 require 'logger'
 

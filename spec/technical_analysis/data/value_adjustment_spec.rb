@@ -15,17 +15,17 @@ describe TechnicalAnalysis::Data::ValueAdjustment do
   context '#date parsing' do
     let(:date_out) { Time.new(2013,4,14) }
     it 'should parse date_in' do
-      subject.date_in.should == Time.parse(dt_in)
+      expect(subject.date_in).to eq Time.parse(dt_in)
     end
 
     it 'should parse date_out' do
-      subject.date_out.should == date_out
+      expect(subject.date_out).to eq date_out
     end
 
     context 'Date obj' do
       let(:dt_in) { Date.new(2013,2,11) }
       it 'should accept date obj' do
-        subject.date_in.should == dt_in
+        expect(subject.date_in).to eq dt_in
       end
     end
 
@@ -43,25 +43,25 @@ describe TechnicalAnalysis::Data::ValueAdjustment do
     let(:open) { 30 }
     let(:close) { 35 }
     let(:volume) { 1_000_000_000 }
-    let(:historical_quote) { HistoricalQuote.new(close: close, high: high, low: low, open: open, low: low, volume: volume) }
+    let(:historical_quote) { HistoricalQuote.new(close: close, high: high, low: low, open: open, volume: volume) }
     before(:each) do
-      subject.should_receive(:historical_quote).any_number_of_times.and_return(historical_quote)
+      allow(subject).to receive(:historical_quote).and_return(historical_quote)
     end
 
     it 'should understand candle price notation' do
-      subject.parse_price_in(:close).should   == close
-      subject.parse_price_in(:open).should    == open
-      subject.parse_price_in(:high).should    == high
-      subject.parse_price_in(:low).should     == low
-      subject.parse_price_in(:volume).should  == volume
+      expect(subject.parse_price_in(:close)).to eq close
+      expect(subject.parse_price_in(:open)).to eq open
+      expect(subject.parse_price_in(:high)).to eq high
+      expect(subject.parse_price_in(:low)).to eq low
+      expect(subject.parse_price_in(:volume)).to eq volume
     end
 
     it 'should return price near open' do
-      (27..33).include?(subject.price_near(:open)).should be_true
+      expect((27..33).include?(subject.price_near(:open))).to eq(true)
     end
 
     it 'should return price above given notation' do
-      (30..40).include?(subject.price_above(:open)).should be_true
+      expect((30..40).include?(subject.price_above(:open))).to eq(true)
     end
 
     it 'should raise error if high is given to price_above' do
@@ -73,16 +73,16 @@ describe TechnicalAnalysis::Data::ValueAdjustment do
     end
 
     it 'should return price above given notation' do
-      (20..30).include?(subject.price_below(:open)).should be_true
+      expect((20..30).include?(subject.price_below(:open))).to eq(true)
     end
 
     it 'should call price_above|below|near in parse price' do
-      subject.should_receive(:price_below).with(:open).and_return(1.1)
-      subject.should_receive(:price_near).with(:close).and_return(1.2)
-      subject.should_receive(:price_above).with(:open).and_return(1.3)
-      subject.parse_price_in(:below_open).should == 1.1
-      subject.parse_price_in(:near_close).should == 1.2
-      subject.parse_price_in(:above_open).should == 1.3
+      allow(subject).to receive(:price_below).with(:open).and_return(1.1)
+      allow(subject).to receive(:price_near).with(:close).and_return(1.2)
+      allow(subject).to receive(:price_above).with(:open).and_return(1.3)
+      expect(subject.parse_price_in(:below_open)).to eq 1.1
+      expect(subject.parse_price_in(:near_close)).to eq 1.2
+      expect(subject.parse_price_in(:above_open)).to eq 1.3
     end
   end
 
@@ -91,15 +91,15 @@ describe TechnicalAnalysis::Data::ValueAdjustment do
       let(:money_in) { 0 }
       let(:quantity) { :default }
       it 'should be 100' do
-        subject.quantity.should == 100
+        expect(subject.quantity).to eq 100
       end
     end
     context 'by the money' do
       let(:quantity) { :default }
       let(:money_in) { 5050 }
       it 'should be 500 with change' do
-        subject.quantity.should == 50
-        subject.change.should == 50
+        expect(subject.quantity).to eq 50
+        expect(subject.change).to eq 50
       end
     end
   end

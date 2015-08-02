@@ -8,14 +8,14 @@ describe Portfolio do
   let(:opts) { { symbol: symbol, price: price, quantity: quantity } }
   let(:time) { Time.new(2013, 1, 2, 12, 0) }
   subject { Portfolio.create(cash: 5000,risk_management_type: 'Classic') }
-  before(:each) { Time.should_receive(:now).any_number_of_times.and_return(time) }
+  before(:each) { allow(Time).to receive(:now).and_return(time) }
 
   context '#sell' do
     let(:type) { :sell }
     it do
-      trades = mock(Trade)
-      subject.should_receive(:trades).and_return(trades)
-      trades.should_receive(:create).with(opts.merge(default_hash)).and_return(true)
+      trades = double(Trade)
+      expect(subject).to receive(:trades).and_return(trades)
+      expect(trades).to receive(:create).with(opts.merge(default_hash)).and_return(true)
       subject.sell(opts)
     end
   end
@@ -23,9 +23,9 @@ describe Portfolio do
   context '#buy' do
     let(:type) { :buy }
     it do
-      trades = mock(Trade)
-      subject.should_receive(:trades).and_return(trades)
-      trades.should_receive(:create).with(opts.merge(default_hash)).and_return(true)
+      trades = double(Trade)
+      expect(subject).to receive(:trades).and_return(trades)
+      expect(trades).to receive(:create).with(opts.merge(default_hash)).and_return(true)
       subject.buy(opts)
     end
   end

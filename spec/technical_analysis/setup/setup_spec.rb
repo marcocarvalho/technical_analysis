@@ -9,15 +9,15 @@ describe TechnicalAnalysis::Setup do
 
   context 'index' do
     it 'should do index' do
-      subject.index.should == { Time.parse('2012-04-01') => 0, Time.parse('2012-04-02') => 1, Time.parse('2012-04-03') => 2 }
+      expect(subject.index).to eq({ Time.parse('2012-04-01') => 0, Time.parse('2012-04-02') => 1, Time.parse('2012-04-03') => 2 })
     end
 
     it 'should return default start position if none is given' do
-      subject.start_at.should == 0
+      expect(subject.start_at).to eq 0
     end
 
     it 'should return default end position if none is given' do
-      subject.end_at.should == 2
+      expect(subject.end_at).to eq 2
     end
 
   end
@@ -26,7 +26,7 @@ describe TechnicalAnalysis::Setup do
     Kernel.send(:remove_const, :D) if Kernel.const_defined?(:D)
     class D < TechnicalAnalysis::Setup; end
     it 'should list inhited classes' do
-      TechnicalAnalysis::Setup.list.include?(D).should be_true
+      expect(TechnicalAnalysis::Setup.list.include?(D)).to be(true)
     end
   end
 end
