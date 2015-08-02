@@ -19,9 +19,8 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
   spec.add_dependency 'nas-yahoo_stock'
   spec.add_dependency 'nokogiri'
-  spec.add_dependency 'activerecord', '3.2.13'
-  spec.add_dependency 'sqlite3'
-  spec.add_dependency 'mysql2'
+  spec.add_dependency 'activerecord'
+  spec.add_dependency 'pg'
   spec.add_dependency 'activerecord-import'
 
   #spec.add_dependency 'ffi-talib', "~> 0.1"  # in the future
@@ -30,8 +29,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake"
 
   # test stuff
-  spec.add_development_dependency 'rspec', '~> 2.5'
-  spec.add_development_dependency 'fuubar', '~> 1.1.0'
+  spec.add_development_dependency 'rspec'
+  spec.add_development_dependency 'fuubar'
 
   # run tests automatically
   spec.add_development_dependency 'guard'
