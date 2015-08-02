@@ -20,6 +20,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'nas-yahoo_stock'
   spec.add_dependency 'nokogiri'
   spec.add_dependency 'activerecord'
+  spec.add_dependency 'sqlite3'
   spec.add_dependency 'pg'
   spec.add_dependency 'activerecord-import'
 

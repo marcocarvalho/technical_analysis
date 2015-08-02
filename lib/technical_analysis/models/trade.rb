@@ -1,5 +1,4 @@
 class Trade < ActiveRecord::Base
-  attr_accessible :symbol, :date, :quantity, :type, :price, :brokerage, :subtotal, :total
   belongs_to :portfolio
 
   validates :symbol, :date, :quantity, :price, :type, presence: true
